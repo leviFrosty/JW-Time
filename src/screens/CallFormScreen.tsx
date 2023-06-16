@@ -81,8 +81,6 @@ export const getInterestLevelIcon = (interestLevel: InterestLevel) => {
   }
 };
 
-// TODO: resolve state mismatch issue when saving
-
 const CallFormScreen: React.FC<CallFormScreenProps> = ({
   navigation,
   route,
@@ -155,22 +153,21 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
     // fetches and sets location based on last known position if there isn't a location
     (async () => {
       if (!location) {
-        try {
-          const lastLocation = await Location.getLastKnownPositionAsync();
-          if (lastLocation) {
-            setLocation(lastLocation);
-          }
-        } catch (err) {
-          setErrorMsg(JSON.stringify(err));
+        const lastLocation = await Location.getLastKnownPositionAsync();
+        if (lastLocation) {
+          setLocation(lastLocation);
         }
       }
     })();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showMap]);
 
   useEffect(() => {
-    // Fetches location data on mount
+    // Asks permission to get location data when attempting to showMap
+    if (!showMap) {
+      return;
+    }
+
     (async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -199,7 +196,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showMap]);
 
   const validate = () => {
     if (!newCallFromState.name) {
@@ -307,8 +304,6 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
       <React.Fragment />
     );
   };
-
-  // TODO: handle redirect from params. Should be in 'edit' mode and prefill all forms with current data. Change page title  to Editing call.name
 
   return (
     <Layout style={styles.wrapper}>

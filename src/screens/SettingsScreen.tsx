@@ -73,13 +73,15 @@ const SettingsScreen: React.FC<PropsWithChildren<SettingsScreenProps>> = () => {
       default:
         setPublisherTypeWithHourTarget(publisherType);
     }
-    // @ts-ignore
-  }, [publisherTypeIndex, setUser, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publisherTypeIndex]);
 
   useEffect(() => {
     // @ts-ignore
     setLanguage(translationKeys[languageIndex.row]);
-  }, [languageIndex, setLanguage]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languageIndex]);
 
   const styles = StyleSheet.create({
     wrapper: {

@@ -18,7 +18,7 @@ import {
 import { getLocales } from 'expo-localization';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ImageProps } from 'react-native';
+import { ImageProps, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from 'sentry-expo';
 
@@ -82,14 +82,24 @@ function App() {
 
   const BottomBar = ({ navigation, state }: BottomTabBarProps) => {
     return (
-      <BottomNavigation
-        appearance="noIndicator"
-        style={{ paddingBottom: 40 }}
-        selectedIndex={state.index}
-        onSelect={index => navigation.navigate(state.routeNames[index])}>
-        <BottomNavigationTab title={i18n.t('home')} icon={HomeIcon} />
-        <BottomNavigationTab title={i18n.t('territory')} icon={MapIcon} />
-      </BottomNavigation>
+      <View>
+        <BottomNavigation
+          appearance="noIndicator"
+          style={{ paddingBottom: 40 }}
+          selectedIndex={state.index}
+          onSelect={index => navigation.navigate(state.routeNames[index])}>
+          <BottomNavigationTab
+            title={i18n.t('home')}
+            icon={HomeIcon}
+            onPress={() => navigation.navigate(state.routeNames[0])}
+          />
+          <BottomNavigationTab
+            title={i18n.t('territory')}
+            icon={MapIcon}
+            onPress={() => navigation.navigate(state.routeNames[0])}
+          />
+        </BottomNavigation>
+      </View>
     );
   };
 

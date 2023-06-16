@@ -1,9 +1,6 @@
 import throttle from 'lodash.throttle';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-/**
- * A custom hook that handles the state for the timer
- */
 const useTimer = (initialTimeInMs = 0, onFinish = () => null) => {
   const [elapsedInMs, setElapsedInMs] = useState(0);
   const startTime = useRef<number | null>(null);

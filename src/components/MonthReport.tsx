@@ -8,7 +8,6 @@ import {
 import moment from 'moment';
 import { StyleSheet, View } from 'react-native';
 
-import ReportHours from './ReportHours';
 import appTheme from '../lib/theme';
 import { i18n } from '../lib/translations';
 import { Call } from '../stores/CallStore';
@@ -19,6 +18,7 @@ import {
 } from '../stores/ServiceRecord';
 import useSettingStore from '../stores/SettingsStore';
 import { Visit } from '../stores/VisitStore';
+import ReportHours from './ReportHours';
 
 export const isSameMonthAndYear = (
   date: moment.Moment,
@@ -175,7 +175,6 @@ export const formatReportForSharing = ({
   const lines = json.split('\n');
   const formattedLines = lines.map(line => line.trim());
   let formattedJSON = formattedLines.join('\n').replace(/["{},]/g, '');
-  // TODO: change to regex
   formattedJSON = formattedJSON.replace('hours', i18n.t('hours'));
   formattedJSON = formattedJSON.replace('placements', i18n.t('placements'));
   formattedJSON = formattedJSON.replace(
