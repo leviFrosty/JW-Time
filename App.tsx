@@ -18,7 +18,7 @@ import {
 import { getLocales } from 'expo-localization';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ImageProps, View } from 'react-native';
+import { ImageProps } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from 'sentry-expo';
 
@@ -82,24 +82,25 @@ function App() {
 
   const BottomBar = ({ navigation, state }: BottomTabBarProps) => {
     return (
-      <View>
-        <BottomNavigation
-          appearance="noIndicator"
-          style={{ paddingBottom: 40 }}
-          selectedIndex={state.index}
-          onSelect={index => navigation.navigate(state.routeNames[index])}>
-          <BottomNavigationTab
-            title={i18n.t('home')}
-            icon={HomeIcon}
-            onPress={() => navigation.navigate(state.routeNames[0])}
-          />
-          <BottomNavigationTab
-            title={i18n.t('territory')}
-            icon={MapIcon}
-            onPress={() => navigation.navigate(state.routeNames[0])}
-          />
-        </BottomNavigation>
-      </View>
+      <BottomNavigation
+        appearance="noIndicator"
+        style={{ paddingBottom: 40 }}
+        selectedIndex={state.index}
+        onSelect={index => {
+          const isFocused = state.index === index;
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: state.routes[index].key,
+            canPreventDefault: true,
+          });
+          if (!isFocused && !event.defaultPrevented) {
+            // The `merge: true` option makes sure that the params inside the tab screen are preserved
+            navigation.navigate(state.routes[index].name, { merge: true });
+          }
+        }}>
+        <BottomNavigationTab title={i18n.t('home')} icon={HomeIcon} />
+        <BottomNavigationTab title={i18n.t('territory')} icon={MapIcon} />
+      </BottomNavigation>
     );
   };
 
