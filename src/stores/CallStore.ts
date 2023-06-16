@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatAddress } from 'localized-address-format';
+import _ from 'lodash';
 import moment from 'moment';
 import 'react-native-get-random-values';
 import { LatLng } from 'react-native-maps';
@@ -115,7 +116,7 @@ const useCallsStore = create(
       },
       setCall: newCallOrCallUpdates => {
         set(state => {
-          const calls: Call[] = JSON.parse(JSON.stringify(state.calls));
+          const calls: Call[] = _.cloneDeep(state.calls);
           const index = calls.findIndex(o => o.id === newCallOrCallUpdates.id);
           if (index === -1) {
             // call not found

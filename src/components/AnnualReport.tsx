@@ -3,11 +3,11 @@ import * as Haptics from 'expo-haptics';
 import React from 'react';
 import { Share, StyleSheet, View } from 'react-native';
 
-import { Export } from './Icons';
-import ReportHours from './ReportHours';
 import appTheme from '../lib/theme';
 import { i18n } from '../lib/translations';
 import { AnnualReportData } from '../stores/ServiceRecord';
+import { ExportIcon } from './Icons';
+import ReportHours from './ReportHours';
 
 interface AnnualReportProps {
   report: AnnualReportData;
@@ -61,7 +61,7 @@ const AnnualReport: React.FC<AnnualReportProps> = ({
         <Button
           appearance="ghost"
           size="small"
-          accessoryLeft={Export}
+          accessoryLeft={ExportIcon}
           onPress={async () => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             await Share.share({

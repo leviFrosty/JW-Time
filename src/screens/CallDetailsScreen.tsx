@@ -1,6 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { FlashList } from '@shopify/flash-list';
 import {
   Button,
+  Datepicker,
   Divider,
   Icon,
   IconElement,
@@ -13,11 +15,12 @@ import {
   useStyleSheet,
 } from '@ui-kitten/components';
 import { TouchableWebElement } from '@ui-kitten/components/devsupport';
+import { MomentDateService } from '@ui-kitten/moment';
 import * as Haptics from 'expo-haptics';
 import * as Linking from 'expo-linking';
 import { formatAddress } from 'localized-address-format';
 import moment from 'moment';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   ImageProps,
@@ -30,9 +33,13 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { getInterestLevelIcon } from './CallFormScreen';
 import CopyToClipBoardWithTooltip from '../components/CopyToClipboard';
-import { Export } from '../components/Icons';
+import {
+  ExportIcon,
+  SortAscCalendarIcon,
+  SortDescCalendarIcon,
+} from '../components/Icons';
+import VisitCard from '../components/VisitCard';
 import appTheme from '../lib/theme';
 import { i18n } from '../lib/translations';
 import { HomeStackParamList } from '../stacks/ParamLists';
@@ -40,8 +47,12 @@ import useCallsStore, {
   Call,
   convertCallToReadableExport,
 } from '../stores/CallStore';
-import useVisitsStore, { getCallMostRecentVisit } from '../stores/VisitStore';
-
+import useVisitsStore, {
+  Visit,
+  getCallMostRecentVisit,
+} from '../stores/VisitStore';
+// eslint-disable-next-line import/order
+import { getInterestLevelIcon } from './CallFormScreen';
 type CallDetailsProps = NativeStackScreenProps<
   HomeStackParamList,
   'CallDetails'
@@ -140,25 +151,57 @@ const DeleteIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => <Icon {...props} name={'delete'} />;
 
+type SubHeaderProps = {
+  children: string;
+};
+const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {
+  return (
+    <Text appearance="hint" style={{ marginBottom: 5 }} category="s1">
+      {children}
+    </Text>
+  );
+};
+
 const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   const callId = route.params.callId;
   const { calls, deleteCall } = useCallsStore();
   const { visits: visitsFromStorage } = useVisitsStore();
+  const [visitSortAsc, setVisitsSortDirection] = useState(true);
   const visits = useMemo(
-    () => visitsFromStorage.filter(v => v.call.id === callId),
-    [visitsFromStorage, callId],
+    () =>
+      visitsFromStorage
+        .filter(v => v.call.id === callId)
+        .sort((a, b) =>
+          moment(a.date).isBefore(b.date) ? (visitSortAsc ? 1 : -1) : 1,
+        ),
+    [visitsFromStorage, callId, visitSortAsc],
   );
   const call = useMemo(() => calls.find(c => c.id === callId), [calls, callId]);
   const insets = useSafeAreaInsets();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mostRecentVisit = useMemo(
+    () => getCallMostRecentVisit(visits, call?.id),
+    [call?.id, visits],
+  );
+  const nextVisitIsSoon = useMemo(
+    () =>
+      moment(mostRecentVisit?.nextVisit?.date).isBetween(
+        moment(),
+        moment(new Date()).add(4, 'days'),
+      ),
+    [mostRecentVisit?.nextVisit?.date],
+  );
+
+  const [visitDate, setVisitDate] = useState(
+    mostRecentVisit ? moment(mostRecentVisit.date) : moment(),
+  );
+  const visitListRef = useRef<FlashList<Visit>>(null);
 
   const themedStyles = StyleSheet.create({
     wrapper: {
       flex: 1,
       paddingTop: 10,
       gap: 10,
-      paddingLeft: appTheme.contentPaddingLeftRight,
-      paddingRight: appTheme.contentPaddingLeftRight,
       paddingBottom: insets.bottom + 10,
     },
     warningMenuItem: {
@@ -166,8 +209,11 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     },
     noteIcon: { height: 15, width: 15, color: 'color-basic-100' },
     scriptureIcon: { height: 12, width: 12, color: 'color-basic-100' },
+    starIcon: { height: 20, width: 20, color: 'color-basic-100' },
     content: {
       gap: 10,
+      paddingLeft: appTheme.contentPaddingLeftRight,
+      paddingRight: appTheme.contentPaddingLeftRight,
     },
     card: {
       paddingVertical: 15,
@@ -209,33 +255,50 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
       borderRadius: appTheme.borderRadius,
     },
     callStatusIcon: { height: 15, width: 15, color: 'color-basic-100' },
+    date: {
+      padding: 5,
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: appTheme.borderRadius,
+    },
+    todaysDate: {
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderColor: 'color-primary-default-border',
+      borderRadius: appTheme.borderRadius,
+    },
+    selectedDate: {
+      borderStyle: 'solid',
+      backgroundColor: 'color-primary-default-border',
+    },
+    bounding: {
+      opacity: 0.4,
+    },
   });
 
   const styles = useStyleSheet(themedStyles);
 
-  const mostRecentVisit = getCallMostRecentVisit(visits, call?.id);
-  const nextVisitIsSoon = moment(mostRecentVisit?.nextVisit?.date).isBetween(
-    moment(),
-    moment(new Date()).add(4, 'days'),
-  );
-
-  const renderMenuToggleButton = () => {
+  const renderMenuToggleButton = useCallback(() => {
     return (
       <TopNavigationAction
         onPress={() => setIsMenuOpen(true)}
         icon={DotsIcon}
       />
     );
-  };
+  }, []);
 
-  const TopNavigationWithBackBottom = (): TouchableWebElement => (
-    <TopNavigationAction
-      icon={DownArrowIcon}
-      onPress={() => navigation.goBack()}
-    />
+  const TopNavigationWithBackBottom = useCallback(
+    (): TouchableWebElement => (
+      <TopNavigationAction
+        icon={DownArrowIcon}
+        onPress={() => navigation.goBack()}
+      />
+    ),
+    [navigation],
   );
 
-  const renderRightNavActions = (): React.ReactElement => {
+  const renderRightNavActions = useCallback((): React.ReactElement => {
     return (
       <React.Fragment>
         <TopNavigationAction
@@ -244,29 +307,20 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             navigation.replace('VisitForm', { callId: call?.id || '' })
           }
         />
+        <TopNavigationAction
+          icon={EditIcon}
+          onPress={() => {
+            setIsMenuOpen(false);
+            navigation.replace('CallForm', { callId: call?.id || '' });
+          }}
+        />
         <OverflowMenu
           onBackdropPress={() => setIsMenuOpen(false)}
           anchor={renderMenuToggleButton}
           visible={isMenuOpen}>
           <MenuItem
-            title={i18n.t('edit')}
-            accessoryLeft={EditIcon}
-            onPress={() => {
-              setIsMenuOpen(false);
-              navigation.replace('CallForm', { callId: call?.id || '' });
-            }}
-          />
-          <MenuItem
-            title={i18n.t('addVisit')}
-            accessoryLeft={AddIcon}
-            onPress={() => {
-              setIsMenuOpen(false);
-              navigation.replace('VisitForm', { callId: call?.id || '' });
-            }}
-          />
-          <MenuItem
             title={i18n.t('share')}
-            accessoryLeft={Export}
+            accessoryLeft={ExportIcon}
             onPress={async () =>
               await Share.share({
                 title: i18n.t('shareCall'),
@@ -276,7 +330,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           />
           {call?.address?.line1 || call?.address?.coordinates?.latitude ? (
             <MenuItem
-              title={i18n.t('navigateTo')}
+              title={i18n.t('navigate')}
               accessoryLeft={MapMarkerIcon}
               onPress={() => openLinkToCoordinatesOrAddress(call)}
             />
@@ -312,7 +366,14 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
         </OverflowMenu>
       </React.Fragment>
     );
-  };
+  }, [
+    call,
+    deleteCall,
+    isMenuOpen,
+    navigation,
+    styles.warningMenuItem,
+    visits,
+  ]);
 
   const formattedAddress = useMemo(
     () =>
@@ -344,6 +405,66 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     return message;
   }, [mostRecentVisit, formattedAddress, call?.name]);
 
+  const AddressCard = useCallback(
+    (copyToClipboard: () => void) => {
+      return (
+        <TouchableOpacity
+          style={{}}
+          activeOpacity={0.8}
+          hitSlop={5}
+          onLongPress={copyToClipboard}
+          onPress={() => (call ? openLinkToAddress(call) : undefined)}>
+          <Text style={{ marginBottom: 2 }} category="s2">
+            {i18n.t('streetAddress')}
+          </Text>
+          <Layout level="2" style={styles.card}>
+            <Text>{formattedAddress}</Text>
+            <Button
+              appearance="ghost"
+              accessoryRight={OpenMapIcon}
+              onPress={() => (call ? openLinkToAddress(call) : undefined)}
+            />
+          </Layout>
+        </TouchableOpacity>
+      );
+    },
+    [call, formattedAddress, styles.card],
+  );
+
+  const coordinatesDisplayValue = useMemo(
+    () =>
+      `${call?.address?.coordinates?.latitude}, ${call?.address?.coordinates?.longitude}`,
+    [
+      call?.address?.coordinates?.latitude,
+      call?.address?.coordinates?.longitude,
+    ],
+  );
+
+  const CoordinatesCard = useCallback(
+    (copyToClipboard: () => void) => {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{ marginVertical: 10 }}
+          onLongPress={copyToClipboard}
+          onPress={() => (call ? openLinkToCoordinate(call) : undefined)}>
+          <Text style={{ marginBottom: 2 }} category="s2">
+            {i18n.t('coordinates')}
+          </Text>
+          <Layout level="2" style={styles.cardLowPadding}>
+            <Text category="c1">{coordinatesDisplayValue}</Text>
+            <Button
+              appearance="ghost"
+              accessoryRight={OpenMapIcon}
+              onPress={() => (call ? openLinkToCoordinate(call) : undefined)}
+            />
+          </Layout>
+        </TouchableOpacity>
+      );
+    },
+    [call, coordinatesDisplayValue, styles.cardLowPadding],
+  );
+
   if (!call) {
     return (
       <Layout style={styles.wrapper}>
@@ -370,62 +491,8 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
       <Icon style={styles.scriptureIcon} name={'book-open-page-variant'} />
     );
   };
-  const coordinatesDisplayValue = `${call?.address?.coordinates?.latitude}, ${call?.address?.coordinates?.longitude}`;
-
-  const CoordinatesCard = (copyToClipboard: () => void) => {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={{ marginVertical: 10 }}
-        onLongPress={copyToClipboard}
-        onPress={() => openLinkToCoordinate(call)}>
-        <Text style={{ marginBottom: 2 }} category="s2">
-          {i18n.t('coordinates')}
-        </Text>
-        <Layout level="2" style={styles.cardLowPadding}>
-          <Text category="c1">{coordinatesDisplayValue}</Text>
-          <Button
-            appearance="ghost"
-            accessoryRight={OpenMapIcon}
-            onPress={() => openLinkToCoordinate(call)}
-          />
-        </Layout>
-      </TouchableOpacity>
-    );
-  };
-
-  const AddressCard = (copyToClipboard: () => void) => {
-    return (
-      <TouchableOpacity
-        style={{}}
-        activeOpacity={0.8}
-        hitSlop={5}
-        onLongPress={copyToClipboard}
-        onPress={() => openLinkToAddress(call)}>
-        <Text style={{ marginBottom: 2 }} category="s2">
-          {i18n.t('streetAddress')}
-        </Text>
-        <Layout level="2" style={styles.card}>
-          <Text>{formattedAddress}</Text>
-          <Button
-            appearance="ghost"
-            accessoryRight={OpenMapIcon}
-            onPress={() => openLinkToAddress(call)}
-          />
-        </Layout>
-      </TouchableOpacity>
-    );
-  };
-
-  type SubHeaderProps = {
-    children: string;
-  };
-  const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {
-    return (
-      <Text appearance="hint" style={{ marginBottom: 5 }} category="s1">
-        {children}
-      </Text>
-    );
+  const StarIcon = (): IconElement => {
+    return <Icon style={styles.starIcon} name={'star'} />;
   };
 
   return (
@@ -439,7 +506,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
       <KeyboardAwareScrollView>
         <View style={styles.content}>
           {nextVisitIsSoon && (
-            <Layout level="2" style={styles.section}>
+            <View>
               <View
                 style={{
                   flexDirection: 'row',
@@ -450,7 +517,6 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    marginBottom: 5,
                   }}>
                   <Text category="h5">{i18n.t('nextVisit')}</Text>
                   <Text status="success" category="h5">
@@ -462,7 +528,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                     size="small"
                     appearance="ghost"
                     status="success"
-                    accessoryLeft={Export}
+                    accessoryLeft={ExportIcon}
                     onPress={async () => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       await Share.share({
@@ -472,42 +538,44 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                   />
                 </View>
               </View>
-
-              <View style={styles.cardGreen}>
-                <View style={{ flex: 1, flexDirection: 'column', gap: 5 }}>
-                  <Text appearance="hint" category="c1">
-                    {moment(mostRecentVisit?.nextVisit?.date).calendar()}
-                  </Text>
-                  {mostRecentVisit?.nextVisit?.linkTopic && (
-                    <Text category="s1">
-                      {mostRecentVisit?.nextVisit?.linkTopic}
+              <Layout level="2" style={styles.section}>
+                <View style={styles.cardGreen}>
+                  <View style={{ flex: 1, flexDirection: 'column', gap: 5 }}>
+                    <Text appearance="hint" category="c1">
+                      {moment(mostRecentVisit?.nextVisit?.date).calendar()}
                     </Text>
-                  )}
-                  {mostRecentVisit?.nextVisit?.linkScripture && (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        gap: 5,
-                        alignItems: 'center',
-                      }}>
-                      <ScriptureIcon />
-                      <Text category="c1">
-                        {mostRecentVisit?.nextVisit?.linkScripture}
+                    {mostRecentVisit?.nextVisit?.linkTopic && (
+                      <Text category="s1">
+                        {mostRecentVisit?.nextVisit?.linkTopic}
                       </Text>
-                    </View>
-                  )}
-                  {mostRecentVisit?.nextVisit?.linkNote && (
-                    <React.Fragment>
-                      <Text appearance="hint" category="c1">
-                        {i18n.t('note')}
-                      </Text>
-                      <Text>{mostRecentVisit?.nextVisit?.linkNote}</Text>
-                    </React.Fragment>
-                  )}
+                    )}
+                    {mostRecentVisit?.nextVisit?.linkScripture && (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          gap: 5,
+                          alignItems: 'center',
+                        }}>
+                        <ScriptureIcon />
+                        <Text category="c1">
+                          {mostRecentVisit?.nextVisit?.linkScripture}
+                        </Text>
+                      </View>
+                    )}
+                    {mostRecentVisit?.nextVisit?.linkNote && (
+                      <React.Fragment>
+                        <Text appearance="hint" category="c1">
+                          {i18n.t('note')}
+                        </Text>
+                        <Text>{mostRecentVisit?.nextVisit?.linkNote}</Text>
+                      </React.Fragment>
+                    )}
+                  </View>
                 </View>
-              </View>
-            </Layout>
+              </Layout>
+            </View>
           )}
+          <Text category="h6">{i18n.t('details')}</Text>
           {Object.keys(call.address || {}).length !== 0 && (
             <Layout level="2" style={styles.section}>
               <View>
@@ -554,11 +622,6 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                   </View>
                 </View>
               </View>
-            </Layout>
-          )}
-          {!!visits && (
-            <Layout level="2" style={styles.section}>
-              <Text>Visits!</Text>
             </Layout>
           )}
           <Layout level="2" style={styles.section}>
@@ -617,9 +680,100 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               </View>
             </View>
           </Layout>
+          {visits.length > 0 && (
+            <React.Fragment>
+              <Text category="h6">{i18n.t('visits')}</Text>
+              <Layout level="2">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 5,
+                    justifyContent: 'space-between',
+                  }}>
+                  <Datepicker
+                    date={visitDate}
+                    onSelect={newDate => {
+                      setVisitDate(newDate);
+                      const visit = visits?.find(
+                        v =>
+                          moment(v.date).dayOfYear() ===
+                          moment(newDate).dayOfYear(),
+                      );
+                      if (visit) {
+                        visitListRef.current?.scrollToItem({
+                          animated: true,
+                          item: visit,
+                        });
+                      }
+                    }}
+                    dateService={new MomentDateService(i18n.locale)}
+                    renderDay={({ date, bounding }) => {
+                      return (
+                        <View
+                          style={[
+                            moment(date).dayOfYear() === visitDate.dayOfYear()
+                              ? styles.selectedDate
+                              : {},
+                            bounding ? styles.bounding : {},
+                            styles.date,
+                          ]}>
+                          <Text style={{ textAlign: 'center' }} category="s1">
+                            {moment(date).format('DD')}
+                          </Text>
+                          {visits?.find(
+                            v =>
+                              moment(v.date).dayOfYear() ===
+                              moment(date).dayOfYear(),
+                          ) && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <StarIcon />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    appearance="outline"
+                    accessoryLeft={
+                      visitSortAsc ? SortAscCalendarIcon : SortDescCalendarIcon
+                    }
+                    onPress={() => setVisitsSortDirection(!visitSortAsc)}
+                  />
+                </View>
 
+                <View style={{ height: 400 }}>
+                  <FlashList
+                    extraData={visitDate}
+                    ref={visitListRef}
+                    data={visits}
+                    renderItem={({ item }) => (
+                      <VisitCard
+                        isFocused={
+                          moment(item.date).dayOfYear() ===
+                          moment(visitDate).dayOfYear()
+                        }
+                        visit={item}
+                      />
+                    )}
+                    estimatedItemSize={174}
+                    ItemSeparatorComponent={() => (
+                      <View style={{ flex: 1, margin: 10 }}></View>
+                    )}
+                    keyExtractor={item => item.id}
+                  />
+                </View>
+              </Layout>
+            </React.Fragment>
+          )}
           <View style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}>
-            <Divider />
+            <Divider style={{ marginVertical: 10 }} />
             <Text appearance="hint" category="c2">
               {i18n.t('created')}
             </Text>
@@ -632,12 +786,6 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               string={moment(call.createdAt).format('dddd, MMMM Do YYYY')}
             />
           </View>
-
-          {/* TODO: add sections from visits here, display history of previous items */}
-          <Text category="s1">Call Data</Text>
-          <Text>{JSON.stringify(call, null, 2)}</Text>
-          <Text category="s1">Corresponding Visits</Text>
-          <Text>{JSON.stringify(visits, null, 2)}</Text>
         </View>
       </KeyboardAwareScrollView>
     </Layout>

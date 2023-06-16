@@ -185,5 +185,11 @@
   "study": "Study",
   "visitWith": "Visit with",
   "scripture": "Scripture",
-  "notes": "Notes"
+  "notes": "Notes",
+  "previousVisits": "Previous Visits",
+  "visits": "Visits",
+  "navigate": "Navigate",
+  "list": "List",
+  "calendar": "Calendar",
+  "mostRecent": "Most Recent"
 }

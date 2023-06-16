@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _ from 'lodash';
 import moment from 'moment';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -54,9 +55,7 @@ const useServiceRecordStore = create(
       },
       setRecord: newItemOrUpdates => {
         set(state => {
-          const records: ServiceRecord[] = JSON.parse(
-            JSON.stringify(state.records),
-          );
+          const records: ServiceRecord[] = _.cloneDeep(state.records);
           const index = records.findIndex(o => o.id === newItemOrUpdates.id);
           if (index === -1) {
             // not found

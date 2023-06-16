@@ -24,7 +24,7 @@ import {
   ChevronRight,
   DeleteIcon,
   DotsIcon,
-  Export,
+  ExportIcon,
   PlusIcon,
 } from '../components/Icons';
 import MonthReport, {
@@ -145,7 +145,7 @@ const AnnualReportScreen = ({ route, navigation }: AnnualReportScreenProps) => {
           <Button
             appearance="ghost"
             size="small"
-            accessoryLeft={Export}
+            accessoryLeft={ExportIcon}
             onPress={async () => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               await Share.share({
@@ -192,7 +192,7 @@ const AnnualReportScreen = ({ route, navigation }: AnnualReportScreenProps) => {
           visible={isMenuOpen}>
           <MenuItem
             title={i18n.t('shareAnnualReport')}
-            accessoryLeft={Export}
+            accessoryLeft={ExportIcon}
             onPress={async () => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               await Share.share({

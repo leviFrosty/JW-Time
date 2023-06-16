@@ -2,7 +2,7 @@ import { Icon } from '@ui-kitten/components';
 import React from 'react';
 import { ImageProps } from 'react-native';
 
-export const Export = (
+export const ExportIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => <Icon {...props} name="export-variant" />;
 export const ChevronRight = (
@@ -27,4 +27,14 @@ export const TargetIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => (
   <Icon {...props} name={'bullseye-arrow'} />
+);
+export const SortAscCalendarIcon = (
+  props?: Partial<ImageProps>,
+): React.ReactElement<ImageProps> => (
+  <Icon {...props} name={'sort-calendar-ascending'} />
+);
+export const SortDescCalendarIcon = (
+  props?: Partial<ImageProps>,
+): React.ReactElement<ImageProps> => (
+  <Icon {...props} name={'sort-calendar-descending'} />
 );

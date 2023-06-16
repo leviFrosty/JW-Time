@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _ from 'lodash';
 import moment from 'moment';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -54,7 +55,7 @@ const useVisitsStore = create(
       },
       setVisit: newItemOrUpdates => {
         set(state => {
-          const visits: Visit[] = JSON.parse(JSON.stringify(state.visits));
+          const visits: Visit[] = _.cloneDeep(state.visits);
           const index = visits.findIndex(o => o.id === newItemOrUpdates.id);
           if (index === -1) {
             // not found
@@ -71,6 +72,9 @@ const useVisitsStore = create(
             };
             visits[index] = updated;
           }
+
+          // sort by date before returning
+          visits.sort((a, b) => (moment(a.date).isBefore(b.date) ? 1 : -1));
           return { visits };
         });
       },

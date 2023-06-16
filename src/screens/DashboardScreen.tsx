@@ -25,7 +25,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CallCard from '../components/CallCard';
-import { Export } from '../components/Icons';
+import { ExportIcon } from '../components/Icons';
 import MonthReport, { parseForMonthReport } from '../components/MonthReport';
 import ScreenTitle from '../components/ScreenTitle';
 import WeeklyActivityTicks from '../components/WeeklyActivityTicks';
@@ -180,7 +180,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
               <Button
                 appearance="ghost"
                 size="small"
-                accessoryLeft={Export}
+                accessoryLeft={ExportIcon}
                 onPress={async () =>
                   await Share.share({
                     title: monthReport.share?.title,
