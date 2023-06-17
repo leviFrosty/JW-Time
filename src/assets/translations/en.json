@@ -193,5 +193,6 @@
   "calendar": "Calendar",
   "mostRecent": "Most Recent",
   "optional": "(Optional)",
-  "hasNoVisitsYet": "has no visits yet."
+  "hasNoVisitsYet": "has no visits yet.",
+  "discardVisit": "Discard Visit"
 }

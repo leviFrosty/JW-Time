@@ -40,7 +40,6 @@ import {
   SortAscCalendarIcon,
   SortDescCalendarIcon,
 } from '../components/Icons';
-import VisitCard from '../components/VisitCard';
 import appTheme from '../lib/theme';
 import { i18n } from '../lib/translations';
 import { HomeStackParamList } from '../stacks/ParamLists';
@@ -53,6 +52,7 @@ import useVisitsStore, {
   getCallMostRecentVisit,
 } from '../stores/VisitStore';
 // eslint-disable-next-line import/order
+import VisitCard from '../components/VisitCard';
 import { getInterestLevelIcon } from './CallFormScreen';
 type CallDetailsProps = NativeStackScreenProps<
   HomeStackParamList,
@@ -192,7 +192,6 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
       ),
     [mostRecentVisit?.nextVisit?.date],
   );
-
   const [visitDate, setVisitDate] = useState(
     mostRecentVisit ? moment(mostRecentVisit.date) : moment(),
   );
@@ -688,7 +687,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           <React.Fragment>
             <Text category="h6">{i18n.t('visits')}</Text>
             {visits.length > 0 ? (
-              <Layout level="2">
+              <Layout level="2" style={{ gap: 10 }}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -751,7 +750,6 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                     onPress={() => setVisitsSortDirection(!visitSortAsc)}
                   />
                 </View>
-
                 <View style={{ height: 400 }}>
                   <FlashList
                     extraData={visitDate}

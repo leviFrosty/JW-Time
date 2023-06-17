@@ -114,12 +114,12 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
         iconLeft={CloseIcon}
         onPressLeft={() =>
           Alert.alert(
-            i18n.t('discardChanges'),
+            i18n.t('discardVisit'),
             i18n.t('unsavedChangesOnScreen'),
             [
               { text: i18n.t('dontLeave'), style: 'cancel', onPress: () => {} },
               {
-                text: i18n.t('discard'),
+                text: i18n.t('discardVisit'),
                 style: 'destructive',
                 // If the user confirmed, then we dispatch the action we blocked earlier
                 // This will continue the action that had triggered the removal of the screen
