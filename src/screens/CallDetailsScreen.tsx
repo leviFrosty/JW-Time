@@ -8,8 +8,6 @@ import {
   IconElement,
   Input,
   Layout,
-  MenuItem,
-  OverflowMenu,
   Text,
   TopNavigation,
   TopNavigationAction,
@@ -23,7 +21,6 @@ import { formatAddress } from 'localized-address-format';
 import moment from 'moment';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   ImageProps,
   Platform,
   Share,
@@ -43,10 +40,7 @@ import {
 import appTheme from '../lib/theme';
 import { i18n } from '../lib/translations';
 import { HomeStackParamList } from '../stacks/ParamLists';
-import useCallsStore, {
-  Call,
-  convertCallToReadableExport,
-} from '../stores/CallStore';
+import useCallsStore, { Call } from '../stores/CallStore';
 import useVisitsStore, {
   Visit,
   getCallMostRecentVisit,
@@ -127,13 +121,13 @@ export const openLinkToCoordinate = (call: Call) => {
   }
 };
 
-const DotsIcon = (
-  props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name="dots-horizontal" />;
+// const DotsIcon = (
+//   props?: Partial<ImageProps>,
+// ): React.ReactElement<ImageProps> => <Icon {...props} name="dots-horizontal" />;
 
-const MapMarkerIcon = (
-  props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name="map-marker" />;
+// const MapMarkerIcon = (
+//   props?: Partial<ImageProps>,
+// ): React.ReactElement<ImageProps> => <Icon {...props} name="map-marker" />;
 
 const EditIcon = (
   props?: Partial<ImageProps>,
@@ -148,9 +142,9 @@ const AddIcon = (
 const DownArrowIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => <Icon {...props} name={'arrow-down'} />;
-const DeleteIcon = (
-  props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name={'delete'} />;
+// const DeleteIcon = (
+//   props?: Partial<ImageProps>,
+// ): React.ReactElement<ImageProps> => <Icon {...props} name={'delete'} />;
 
 type SubHeaderProps = {
   children: string;
@@ -165,7 +159,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {
 
 const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   const callId = route.params.callId;
-  const { calls, deleteCall, setCall } = useCallsStore();
+  const { calls, setCall } = useCallsStore();
   const { visits: visitsFromStorage } = useVisitsStore();
   const [visitSortAsc, setVisitsSortDirection] = useState(true);
   const visits = useMemo(
@@ -179,7 +173,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   );
   const call = useMemo(() => calls.find(c => c.id === callId), [calls, callId]);
   const insets = useSafeAreaInsets();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [, setIsMenuOpen] = useState(false);
   const mostRecentVisit = useMemo(
     () => getCallMostRecentVisit(visits, call?.id),
     [call?.id, visits],
@@ -279,14 +273,14 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const renderMenuToggleButton = useCallback(() => {
-    return (
-      <TopNavigationAction
-        onPress={() => setIsMenuOpen(true)}
-        icon={DotsIcon}
-      />
-    );
-  }, []);
+  // const renderMenuToggleButton = useCallback(() => {
+  //   return (
+  //     <TopNavigationAction
+  //       onPress={() => setIsMenuOpen(true)}
+  //       icon={DotsIcon}
+  //     />
+  //   );
+  // }, []);
 
   const TopNavigationWithBackBottom = useCallback(
     (): TouchableWebElement => (
@@ -314,7 +308,8 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             navigation.replace('CallForm', { callId: call?.id || '' });
           }}
         />
-        <OverflowMenu
+        {/* BUG: From the CallDetailsScreen, create a new visit (with/without details), save it, Infinite loop caused and error: "measure cannot find view with tag #(null)"  */}
+        {/* <OverflowMenu
           onBackdropPress={() => setIsMenuOpen(false)}
           anchor={renderMenuToggleButton}
           visible={isMenuOpen}>
@@ -363,18 +358,10 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               ]);
             }}
           />
-        </OverflowMenu>
+        </OverflowMenu> */}
       </React.Fragment>
     );
-  }, [
-    call,
-    deleteCall,
-    isMenuOpen,
-    navigation,
-    renderMenuToggleButton,
-    styles.warningMenuItem,
-    visits,
-  ]);
+  }, [call, navigation]);
 
   const formattedAddress = useMemo(
     () =>
