@@ -21,6 +21,7 @@ import { formatAddress } from 'localized-address-format';
 import moment from 'moment';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   ImageProps,
   Platform,
   Share,
@@ -33,6 +34,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CopyToClipBoardWithTooltip from '../components/CopyToClipboard';
 import {
+  DeleteIcon,
   ExportIcon,
   SortAscCalendarIcon,
   SortDescCalendarIcon,
@@ -159,7 +161,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {
 
 const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   const callId = route.params.callId;
-  const { calls, setCall } = useCallsStore();
+  const { calls, setCall, deleteCall } = useCallsStore();
   const { visits: visitsFromStorage } = useVisitsStore();
   const [visitSortAsc, setVisitsSortDirection] = useState(true);
   const visits = useMemo(
@@ -774,19 +776,57 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             )}
           </React.Fragment>
 
-          <View style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}>
-            <Divider style={{ marginVertical: 10 }} />
-            <Text appearance="hint" category="c2">
-              {i18n.t('created')}
-            </Text>
-            <CopyToClipBoardWithTooltip
-              component={copy => (
-                <Text onLongPress={copy} appearance="hint" category="c1">
-                  {moment(call.createdAt).format('dddd, MMMM Do YYYY')}
+          <View style={{ flexDirection: 'column', gap: 5 }}>
+            <Divider style={{ marginVertical: 5 }} />
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 5,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Text appearance="hint" category="c2">
+                  {i18n.t('created')}
                 </Text>
-              )}
-              string={moment(call.createdAt).format('dddd, MMMM Do YYYY')}
-            />
+                <CopyToClipBoardWithTooltip
+                  component={copy => (
+                    <Text onLongPress={copy} appearance="hint" category="c1">
+                      {moment(call.createdAt).format('dddd, MMMM Do YYYY')}
+                    </Text>
+                  )}
+                  string={moment(call.createdAt).format('dddd, MMMM Do YYYY')}
+                />
+              </View>
+              <Button
+                size="tiny"
+                appearance="ghost"
+                status="danger"
+                accessoryLeft={DeleteIcon}
+                onPress={() => {
+                  Alert.alert(i18n.t('deleteCall'), i18n.t('deleteCaption'), [
+                    {
+                      text: i18n.t('cancel'),
+                      style: 'cancel',
+                      onPress: () => {
+                        setIsMenuOpen(false);
+                      },
+                    },
+                    {
+                      text: i18n.t('delete'),
+                      style: 'destructive',
+                      // If the user confirmed, then we dispatch the action we blocked earlier
+                      // This will continue the action that had triggered the removal of the screen
+                      onPress: () => {
+                        navigation.popToTop();
+                        deleteCall(call?.id);
+                      },
+                    },
+                  ]);
+                }}>
+                {i18n.t('deleteCall')}
+              </Button>
+            </View>
           </View>
         </View>
       </KeyboardAwareScrollView>
