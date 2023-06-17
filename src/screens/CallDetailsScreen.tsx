@@ -6,6 +6,7 @@ import {
   Divider,
   Icon,
   IconElement,
+  Input,
   Layout,
   MenuItem,
   OverflowMenu,
@@ -164,7 +165,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {
 
 const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   const callId = route.params.callId;
-  const { calls, deleteCall } = useCallsStore();
+  const { calls, deleteCall, setCall } = useCallsStore();
   const { visits: visitsFromStorage } = useVisitsStore();
   const [visitSortAsc, setVisitsSortDirection] = useState(true);
   const visits = useMemo(
@@ -209,7 +210,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     },
     noteIcon: { height: 15, width: 15, color: 'color-basic-100' },
     scriptureIcon: { height: 12, width: 12, color: 'color-basic-100' },
-    starIcon: { height: 20, width: 20, color: 'color-basic-100' },
+    starIcon: { height: 20, width: 20, color: 'color-success-500' },
     content: {
       gap: 10,
       paddingLeft: appTheme.contentPaddingLeftRight,
@@ -371,6 +372,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     deleteCall,
     isMenuOpen,
     navigation,
+    renderMenuToggleButton,
     styles.warningMenuItem,
     visits,
   ]);
@@ -600,30 +602,32 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               </View>
             </Layout>
           )}
-          {call.note && (
-            <Layout level="2" style={styles.section}>
-              <View>
-                <SubHeader>{i18n.t('note')}</SubHeader>
-                <View style={{ flexDirection: 'row', gap: 10 }}>
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                    }}>
-                    <NoteIcon />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <CopyToClipBoardWithTooltip
-                      component={copy => (
-                        <Text onLongPress={copy}>{call.note}</Text>
-                      )}
-                      string={call.note}
-                    />
-                  </View>
+          <Layout level="2" style={styles.section}>
+            <View>
+              <SubHeader>{i18n.t('note')}</SubHeader>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}>
+                  <NoteIcon />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Input
+                    value={call.note || ''}
+                    multiline
+                    onChangeText={note =>
+                      setCall({
+                        ...call,
+                        note,
+                      })
+                    }
+                  />
                 </View>
               </View>
-            </Layout>
-          )}
+            </View>
+          </Layout>
           <Layout level="2" style={styles.section}>
             <View style={{ flexDirection: 'row' }}>
               {call.interestLevel && (
@@ -680,14 +684,14 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               </View>
             </View>
           </Layout>
-          {visits.length > 0 && (
-            <React.Fragment>
-              <Text category="h6">{i18n.t('visits')}</Text>
+
+          <React.Fragment>
+            <Text category="h6">{i18n.t('visits')}</Text>
+            {visits.length > 0 ? (
               <Layout level="2">
                 <View
                   style={{
                     flexDirection: 'row',
-                    gap: 5,
                     justifyContent: 'space-between',
                   }}>
                   <Datepicker
@@ -770,8 +774,21 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                   />
                 </View>
               </Layout>
-            </React.Fragment>
-          )}
+            ) : (
+              <React.Fragment>
+                <Text appearance="hint" category="s1">
+                  {`${call.name} ${i18n.t('hasNoVisitsYet')}`}
+                </Text>
+                <Button
+                  onPress={() =>
+                    navigation.replace('VisitForm', { callId: call?.id || '' })
+                  }>
+                  {i18n.t('addVisit')}
+                </Button>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+
           <View style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}>
             <Divider style={{ marginVertical: 10 }} />
             <Text appearance="hint" category="c2">

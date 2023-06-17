@@ -357,7 +357,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               {i18n.t('address')}
             </Text>
             <Input
-              placeholder={i18n.t('addressLine1Placeholder')}
+              placeholder={`${i18n.t('addressLine1Placeholder')} ${i18n.t(
+                'optional',
+              )}`}
               label={i18n.t('addressLine1')}
               value={newCallFromState.address?.line1 || ''}
               onChangeText={line1 =>
@@ -370,7 +372,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
             {useAddressLine2 && (
               <Input
                 label={i18n.t('addressLine2')}
-                placeholder={i18n.t('addressLine2Placeholder')}
+                placeholder={`${i18n.t('addressLine2Placeholder')} ${i18n.t(
+                  'optional',
+                )}`}
                 value={newCallFromState.address?.line2 || ''}
                 onChangeText={line2 =>
                   setCallState({
@@ -417,7 +421,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <Input
                 style={{ flex: 1 }}
                 label={i18n.t('city')}
-                placeholder={i18n.t('callCityPlaceholder')}
+                placeholder={`${i18n.t('callCityPlaceholder')} ${i18n.t(
+                  'optional',
+                )}`}
                 value={newCallFromState.address?.city || ''}
                 onChangeText={city =>
                   setCallState({
@@ -429,7 +435,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <Input
                 style={{ flex: 1 }}
                 label={i18n.t('state')}
-                placeholder={i18n.t('callStatePlaceholder')}
+                placeholder={`${i18n.t('callStatePlaceholder')} ${i18n.t(
+                  'optional',
+                )}`}
                 value={newCallFromState.address?.state || ''}
                 onChangeText={state =>
                   setCallState({
@@ -444,7 +452,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <Input
                 style={{ flex: 1 }}
                 label={i18n.t('postalCode')}
-                placeholder={i18n.t('callPostalCodePlaceholder')}
+                placeholder={`${i18n.t('callPostalCodePlaceholder')} ${i18n.t(
+                  'optional',
+                )}`}
                 caption={i18n.t('callPostalCodeCaption')}
                 keyboardType="number-pad"
                 value={newCallFromState.address?.postalCode || ''}
@@ -458,7 +468,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <Input
                 style={{ flex: 1 }}
                 label={i18n.t('country')}
-                placeholder={i18n.t('callCountryPlaceholder')}
+                placeholder={`${i18n.t('callCountryPlaceholder')} ${i18n.t(
+                  'optional',
+                )}`}
                 value={newCallFromState.address?.country || ''}
                 onChangeText={country =>
                   setCallState({
@@ -582,7 +594,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
             <Input
               accessoryLeft={NoteIcon}
               label={i18n.t('note')}
-              placeholder={i18n.t('callNotePlaceholder')}
+              placeholder={`${i18n.t('callNotePlaceholder')} ${i18n.t(
+                'optional',
+              )}`}
               multiline={true}
               value={newCallFromState.note || ''}
               onChangeText={note => setCallState({ ...newCallFromState, note })}

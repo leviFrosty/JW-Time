@@ -14,6 +14,7 @@ interface VisitCardProps {
 }
 
 const VisitCard: React.FC<VisitCardProps> = ({ visit, isFocused, level }) => {
+  // const { deleteVisit } = useVisitsStore();
   const themedStyles = StyleSheet.create({
     section: {
       padding: 10,
@@ -21,7 +22,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ visit, isFocused, level }) => {
       gap: 15,
     },
     focused: {
-      borderColor: 'color-primary-500',
+      borderColor: 'color-primary-800',
       borderWidth: 2,
     },
   });

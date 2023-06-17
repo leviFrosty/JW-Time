@@ -52,6 +52,7 @@ const AnnualReport: React.FC<AnnualReportProps> = ({
   });
   const styles = useStyleSheet(themeStyles);
 
+  // TODO: change annual report to get values from sept-sept instead of jan-jan
   return (
     <Layout level="2" style={styles.container}>
       <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>

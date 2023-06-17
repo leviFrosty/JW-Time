@@ -319,7 +319,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       label={i18n.t('topic')}
                       autoFocus={!!values.query.id}
                       value={values.visit.topic}
-                      placeholder={i18n.t('visitTopicPlaceholder')}
+                      placeholder={`${i18n.t('visitTopicPlaceholder')} ${i18n.t(
+                        'optional',
+                      )}`}
                       onChangeText={topic =>
                         setValues({
                           ...values,
@@ -332,7 +334,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       value={values.visit.note}
                       label={i18n.t('note')}
                       multiline
-                      placeholder={i18n.t('visitNotePlaceholder')}
+                      placeholder={`${i18n.t('visitNotePlaceholder')} ${i18n.t(
+                        'optional',
+                      )}`}
                       onChangeText={note =>
                         setValues({
                           ...values,
@@ -344,7 +348,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       accessoryLeft={HandIcon}
                       label={i18n.t('placement')}
                       value={values.visit.placement}
-                      placeholder={i18n.t('visitPlacementPlaceholder')}
+                      placeholder={`${i18n.t(
+                        'visitPlacementPlaceholder',
+                      )} ${i18n.t('optional')}`}
                       onChangeText={placement =>
                         setValues({
                           ...values,
@@ -356,7 +362,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       accessoryLeft={VideoIcon}
                       label={i18n.t('videoPlacement')}
                       value={values.visit.videoPlacement}
-                      placeholder={i18n.t('videoPlacementPlaceholder')}
+                      placeholder={`${i18n.t(
+                        'videoPlacementPlaceholder',
+                      )} ${i18n.t('optional')}`}
                       onChangeText={videoPlacement =>
                         setValues({
                           ...values,
@@ -368,7 +376,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       accessoryLeft={MultiplePersonIcon}
                       label={i18n.t('partners')}
                       value={values.visit.partners}
-                      placeholder={i18n.t('visitPartnersPlaceholder')}
+                      placeholder={`${i18n.t(
+                        'visitPartnersPlaceholder',
+                      )} ${i18n.t('optional')}`}
                       caption={i18n.t('visitPartnersCaption')}
                       onChangeText={partners =>
                         setValues({
@@ -462,7 +472,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       accessoryLeft={HookIcon}
                       label={i18n.t('visitLinkTopic')}
                       value={values.visit.nextVisit.linkTopic}
-                      placeholder={i18n.t('visitLinkTopicPlaceholder')}
+                      placeholder={`${i18n.t(
+                        'visitLinkTopicPlaceholder',
+                      )} ${i18n.t('optional')}`}
                       onChangeText={linkTopic =>
                         setValues({
                           ...values,
@@ -480,7 +492,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       accessoryLeft={ScriptureIcon}
                       label={i18n.t('visitLinkScripture')}
                       value={values.visit.nextVisit.linkScripture}
-                      placeholder={i18n.t('visitLinkScripturePlaceholder')}
+                      placeholder={`${i18n.t(
+                        'visitLinkScripturePlaceholder',
+                      )} ${i18n.t('optional')}`}
                       onChangeText={linkScripture =>
                         setValues({
                           ...values,
@@ -499,7 +513,9 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                       value={values.visit.nextVisit.linkNote}
                       label={i18n.t('note')}
                       multiline
-                      placeholder={i18n.t('visitNextVisitNotePlaceholder')}
+                      placeholder={`${i18n.t(
+                        'visitNextVisitNotePlaceholder',
+                      )} ${i18n.t('optional')}`}
                       onChangeText={linkNote =>
                         setValues({
                           ...values,
