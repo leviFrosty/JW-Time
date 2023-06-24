@@ -77,10 +77,10 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
   const { visits, deleteAllVisits } = useVisitsStore();
   const insets = useSafeAreaInsets();
 
-  const [expoPushToken, setExpoPushToken] = useState<string | void>();
-  const [notification, setNotification] = useState<
-    Notifications.Notification | boolean
-  >(false);
+  const [, setExpoPushToken] = useState<string | void>();
+  const [, setNotification] = useState<Notifications.Notification | boolean>(
+    false,
+  );
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
