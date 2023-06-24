@@ -1,5 +1,5 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { FlashList } from '@shopify/flash-list';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { FlashList } from "@shopify/flash-list";
 import {
   Button,
   Datepicker,
@@ -12,14 +12,14 @@ import {
   TopNavigation,
   TopNavigationAction,
   useStyleSheet,
-} from '@ui-kitten/components';
-import { TouchableWebElement } from '@ui-kitten/components/devsupport';
-import { MomentDateService } from '@ui-kitten/moment';
-import * as Haptics from 'expo-haptics';
-import * as Linking from 'expo-linking';
-import { formatAddress } from 'localized-address-format';
-import moment from 'moment';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+} from "@ui-kitten/components";
+import { TouchableWebElement } from "@ui-kitten/components/devsupport";
+import { MomentDateService } from "@ui-kitten/moment";
+import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
+import { formatAddress } from "localized-address-format";
+import moment from "moment";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Alert,
   ImageProps,
@@ -28,43 +28,41 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import CopyToClipBoardWithTooltip from '../components/CopyToClipboard';
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import CopyToClipBoardWithTooltip from "../components/CopyToClipboard";
 import {
   DeleteIcon,
   ExportIcon,
   SortAscCalendarIcon,
   SortDescCalendarIcon,
-} from '../components/Icons';
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import { HomeStackParamList } from '../stacks/ParamLists';
-import useCallsStore, { Call } from '../stores/CallStore';
+} from "../components/Icons";
+import VisitCard from "../components/VisitCard";
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import { HomeStackParamList } from "../stacks/ParamLists";
+import useCallsStore, { Call } from "../stores/CallStore";
 import useVisitsStore, {
   Visit,
   getCallMostRecentVisit,
-} from '../stores/VisitStore';
-// eslint-disable-next-line import/order
-import VisitCard from '../components/VisitCard';
-import { getInterestLevelIcon } from './CallFormScreen';
+} from "../stores/VisitStore";
+import { getInterestLevelIcon } from "./CallFormScreen";
 type CallDetailsProps = NativeStackScreenProps<
   HomeStackParamList,
-  'CallDetails'
+  "CallDetails"
 >;
 
 const InterestLevelIcon = ({ name }: { name: string }): IconElement => (
   <Icon
-    style={{ height: 15, width: 15, color: '#fff' }}
+    style={{ height: 15, width: 15, color: "#fff" }}
     name={getInterestLevelIcon(name)}
   />
 );
 
 const scheme = Platform.select({
-  ios: 'maps://0,0?q=',
-  android: 'geo:0,0?q=',
+  ios: "maps://0,0?q=",
+  android: "geo:0,0?q=",
 });
 
 export const openLinkToCoordinatesOrAddress = (call: Call) => {
@@ -85,10 +83,10 @@ export const openLinkToAddress = (call: Call) => {
   const state = call.address?.state;
   const postalCode = call.address?.postalCode;
   const country = call.address?.country;
-  const rawAddress = `${line1}${line2 ? `,${line2}` : ''}${
-    city ? `,${city}` : ''
-  }${state ? `,${state}` : ''}${postalCode ? `,${postalCode}` : ''}${
-    country ? `,${country}` : ''
+  const rawAddress = `${line1}${line2 ? `,${line2}` : ""}${
+    city ? `,${city}` : ""
+  }${state ? `,${state}` : ""}${postalCode ? `,${postalCode}` : ""}${
+    country ? `,${country}` : ""
   }`;
   const uriEncodedAddress = encodeURI(rawAddress);
   if (!uriEncodedAddress) {
@@ -143,7 +141,7 @@ const AddIcon = (
 ): React.ReactElement<ImageProps> => <Icon {...props} name="plus" />;
 const DownArrowIcon = (
   props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name={'arrow-down'} />;
+): React.ReactElement<ImageProps> => <Icon {...props} name={"arrow-down"} />;
 // const DeleteIcon = (
 //   props?: Partial<ImageProps>,
 // ): React.ReactElement<ImageProps> => <Icon {...props} name={'delete'} />;
@@ -184,7 +182,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     () =>
       moment(mostRecentVisit?.nextVisit?.date).isBetween(
         moment(),
-        moment(new Date()).add(4, 'days'),
+        moment(new Date()).add(4, "days"),
       ),
     [mostRecentVisit?.nextVisit?.date],
   );
@@ -201,11 +199,11 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
       paddingBottom: insets.bottom + 10,
     },
     warningMenuItem: {
-      color: 'color-danger-500',
+      color: "color-danger-500",
     },
-    noteIcon: { height: 15, width: 15, color: 'color-basic-100' },
-    scriptureIcon: { height: 12, width: 12, color: 'color-basic-100' },
-    starIcon: { height: 20, width: 20, color: 'color-success-500' },
+    noteIcon: { height: 15, width: 15, color: "color-basic-100" },
+    scriptureIcon: { height: 12, width: 12, color: "color-basic-100" },
+    starIcon: { height: 20, width: 20, color: "color-success-500" },
     content: {
       gap: 10,
       paddingLeft: appTheme.contentPaddingLeftRight,
@@ -214,59 +212,59 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     card: {
       paddingVertical: 15,
       paddingHorizontal: 10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: 'color-primary-transparent-100',
-      borderStyle: 'solid',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: "color-primary-transparent-100",
+      borderStyle: "solid",
       borderWidth: 1,
-      borderColor: 'color-primary-default-border',
+      borderColor: "color-primary-default-border",
       borderRadius: appTheme.borderRadius,
     },
     cardLowPadding: {
       paddingVertical: 5,
       paddingHorizontal: 10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: 'color-primary-transparent-100',
-      borderStyle: 'solid',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: "color-primary-transparent-100",
+      borderStyle: "solid",
       borderWidth: 1,
-      borderColor: 'color-primary-default-border',
+      borderColor: "color-primary-default-border",
       borderRadius: appTheme.borderRadius,
     },
     cardGreen: {
       paddingVertical: 10,
       paddingHorizontal: 15,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      backgroundColor: 'color-success-transparent-100',
-      borderStyle: 'solid',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      backgroundColor: "color-success-transparent-100",
+      borderStyle: "solid",
       borderWidth: 1,
-      borderColor: 'color-success-default-border',
+      borderColor: "color-success-default-border",
       borderRadius: appTheme.borderRadius,
     },
     section: {
       padding: 10,
       borderRadius: appTheme.borderRadius,
     },
-    callStatusIcon: { height: 15, width: 15, color: 'color-basic-100' },
+    callStatusIcon: { height: 15, width: 15, color: "color-basic-100" },
     date: {
       padding: 5,
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       borderRadius: appTheme.borderRadius,
     },
     todaysDate: {
-      borderStyle: 'solid',
+      borderStyle: "solid",
       borderWidth: 1,
-      borderColor: 'color-primary-default-border',
+      borderColor: "color-primary-default-border",
       borderRadius: appTheme.borderRadius,
     },
     selectedDate: {
-      borderStyle: 'solid',
-      backgroundColor: 'color-primary-default-border',
+      borderStyle: "solid",
+      backgroundColor: "color-primary-default-border",
     },
     bounding: {
       opacity: 0.4,
@@ -300,14 +298,14 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
         <TopNavigationAction
           icon={AddIcon}
           onPress={() =>
-            navigation.replace('VisitForm', { callId: call?.id || '' })
+            navigation.replace("VisitForm", { callId: call?.id || "" })
           }
         />
         <TopNavigationAction
           icon={EditIcon}
           onPress={() => {
             setIsMenuOpen(false);
-            navigation.replace('CallForm', { callId: call?.id || '' });
+            navigation.replace("CallForm", { callId: call?.id || "" });
           }}
         />
         {/* BUG: From the CallDetailsScreen, create a new visit (with/without details), save it, Infinite loop caused and error: "measure cannot find view with tag #(null)"  */}
@@ -368,28 +366,28 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
   const formattedAddress = useMemo(
     () =>
       formatAddress({
-        addressLines: [call?.address?.line1 || '', call?.address?.line2 || ''],
+        addressLines: [call?.address?.line1 || "", call?.address?.line2 || ""],
         locality: call?.address?.city,
         administrativeArea: call?.address?.state,
         postalCode: call?.address?.postalCode,
-        postalCountry: call?.address?.country || 'US',
-      }).join('\n'),
+        postalCountry: call?.address?.country || "US",
+      }).join("\n"),
     [call],
   );
 
   const upcomingVisitFormattedForSms = useMemo(() => {
     const nextVisit = mostRecentVisit?.nextVisit;
     if (!nextVisit) {
-      return '';
+      return "";
     }
     const { date, notifyMe, ...details } = nextVisit;
-    const message = `${i18n.t('visitWith')} ${call?.name} ${moment(
+    const message = `${i18n.t("visitWith")} ${call?.name} ${moment(
       mostRecentVisit?.nextVisit?.date,
     ).fromNow()}: ${moment(mostRecentVisit?.nextVisit?.date).format(
-      'ddd, Do @ h:mmA',
-    )}\n\n${formattedAddress}\n\n${i18n.t('topic')}: ${
+      "ddd, Do @ h:mmA",
+    )}\n\n${formattedAddress}\n\n${i18n.t("topic")}: ${
       details.linkTopic
-    }\n${i18n.t('scripture')}: ${details.linkScripture}\n${i18n.t('notes')}: ${
+    }\n${i18n.t("scripture")}: ${details.linkScripture}\n${i18n.t("notes")}: ${
       details.linkNote
     }`;
     return message;
@@ -405,7 +403,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           onLongPress={copyToClipboard}
           onPress={() => (call ? openLinkToAddress(call) : undefined)}>
           <Text style={{ marginBottom: 2 }} category="s2">
-            {i18n.t('streetAddress')}
+            {i18n.t("streetAddress")}
           </Text>
           <Layout level="2" style={styles.card}>
             <Text>{formattedAddress}</Text>
@@ -439,7 +437,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           onLongPress={copyToClipboard}
           onPress={() => (call ? openLinkToCoordinate(call) : undefined)}>
           <Text style={{ marginBottom: 2 }} category="s2">
-            {i18n.t('coordinates')}
+            {i18n.t("coordinates")}
           </Text>
           <Layout level="2" style={styles.cardLowPadding}>
             <Text category="c1">{coordinatesDisplayValue}</Text>
@@ -459,30 +457,30 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
     return (
       <Layout style={styles.wrapper}>
         <Text category="h1" status="danger">
-          {i18n.t('error')}
+          {i18n.t("error")}
         </Text>
-        <Text category="s1">{i18n.t('callNotFound')}</Text>
+        <Text category="s1">{i18n.t("callNotFound")}</Text>
         <Text category="label" style={{ marginVertical: 10 }}>
-          {i18n.t('callNotFoundHelper')}
+          {i18n.t("callNotFoundHelper")}
         </Text>
-        <Button onPress={() => navigation.goBack()}>{i18n.t('goBack')}</Button>
+        <Button onPress={() => navigation.goBack()}>{i18n.t("goBack")}</Button>
       </Layout>
     );
   }
 
   const NoteIcon = (): IconElement => {
-    return <Icon style={styles.noteIcon} name={'note'} />;
+    return <Icon style={styles.noteIcon} name={"note"} />;
   };
   const CallStatusIcon = (): IconElement => {
-    return <Icon style={styles.callStatusIcon} name={'flag'} />;
+    return <Icon style={styles.callStatusIcon} name={"flag"} />;
   };
   const ScriptureIcon = (): IconElement => {
     return (
-      <Icon style={styles.scriptureIcon} name={'book-open-page-variant'} />
+      <Icon style={styles.scriptureIcon} name={"book-open-page-variant"} />
     );
   };
   const StarIcon = (): IconElement => {
-    return <Icon style={styles.starIcon} name={'star'} />;
+    return <Icon style={styles.starIcon} name={"star"} />;
   };
 
   return (
@@ -499,16 +497,16 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             <View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}>
-                  <Text category="h5">{i18n.t('nextVisit')}</Text>
+                  <Text category="h5">{i18n.t("nextVisit")}</Text>
                   <Text status="success" category="h5">
                     {` ${moment(mostRecentVisit?.nextVisit?.date).fromNow()}`}
                   </Text>
@@ -530,7 +528,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               </View>
               <Layout level="2" style={styles.section}>
                 <View style={styles.cardGreen}>
-                  <View style={{ flex: 1, flexDirection: 'column', gap: 5 }}>
+                  <View style={{ flex: 1, flexDirection: "column", gap: 5 }}>
                     <Text appearance="hint" category="c1">
                       {moment(mostRecentVisit?.nextVisit?.date).calendar()}
                     </Text>
@@ -542,9 +540,9 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                     {mostRecentVisit?.nextVisit?.linkScripture && (
                       <View
                         style={{
-                          flexDirection: 'row',
+                          flexDirection: "row",
                           gap: 5,
-                          alignItems: 'center',
+                          alignItems: "center",
                         }}>
                         <ScriptureIcon />
                         <Text category="c1">
@@ -555,7 +553,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                     {mostRecentVisit?.nextVisit?.linkNote && (
                       <React.Fragment>
                         <Text appearance="hint" category="c1">
-                          {i18n.t('note')}
+                          {i18n.t("note")}
                         </Text>
                         <Text>{mostRecentVisit?.nextVisit?.linkNote}</Text>
                       </React.Fragment>
@@ -565,11 +563,11 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
               </Layout>
             </View>
           )}
-          <Text category="h6">{i18n.t('details')}</Text>
+          <Text category="h6">{i18n.t("details")}</Text>
           {Object.keys(call.address || {}).length !== 0 && (
             <Layout level="2" style={styles.section}>
               <View>
-                <SubHeader>{i18n.t('address')}</SubHeader>
+                <SubHeader>{i18n.t("address")}</SubHeader>
                 {call.address?.line1 && (
                   <React.Fragment>
                     <CopyToClipBoardWithTooltip
@@ -592,18 +590,18 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           )}
           <Layout level="2" style={styles.section}>
             <View>
-              <SubHeader>{i18n.t('note')}</SubHeader>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
+              <SubHeader>{i18n.t("note")}</SubHeader>
+              <View style={{ flexDirection: "row", gap: 10 }}>
                 <View
                   style={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}>
                   <NoteIcon />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Input
-                    value={call.note || ''}
+                    value={call.note || ""}
                     multiline
                     onChangeText={note =>
                       setCall({
@@ -617,21 +615,21 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             </View>
           </Layout>
           <Layout level="2" style={styles.section}>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: "row" }}>
               {call.interestLevel && (
                 <View style={{ flex: 1 }}>
-                  <SubHeader>{i18n.t('interestLevel')}</SubHeader>
+                  <SubHeader>{i18n.t("interestLevel")}</SubHeader>
                   <View
                     style={{
-                      flexDirection: 'row',
+                      flexDirection: "row",
                       gap: 10,
-                      alignItems: 'center',
+                      alignItems: "center",
                     }}>
                     <InterestLevelIcon name={call.interestLevel} />
                     <CopyToClipBoardWithTooltip
                       component={copy => (
                         <Text onLongPress={copy}>
-                          {i18n.t(call.interestLevel || '')}
+                          {i18n.t(call.interestLevel || "")}
                         </Text>
                       )}
                       string={i18n.t(call.interestLevel)}
@@ -639,13 +637,13 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                   </View>
                 </View>
               )}
-              <View style={{ flexDirection: 'column', flex: 1 }}>
-                <SubHeader>{i18n.t('status')}</SubHeader>
+              <View style={{ flexDirection: "column", flex: 1 }}>
+                <SubHeader>{i18n.t("status")}</SubHeader>
                 <View
                   style={{
-                    flexDirection: 'row',
+                    flexDirection: "row",
                     gap: 10,
-                    alignItems: 'center',
+                    alignItems: "center",
                   }}>
                   <CallStatusIcon />
                   <CopyToClipBoardWithTooltip
@@ -653,19 +651,19 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                       <Text onLongPress={copy}>
                         {i18n.t(
                           call.isStudy
-                            ? 'study'
+                            ? "study"
                             : call.isReturnVisit
-                            ? 'returnVisit'
-                            : 'initialCall',
+                            ? "returnVisit"
+                            : "initialCall",
                         )}
                       </Text>
                     )}
                     string={i18n.t(
                       call.isStudy
-                        ? 'study'
+                        ? "study"
                         : call.isReturnVisit
-                        ? 'returnVisit'
-                        : 'initialCall',
+                        ? "returnVisit"
+                        : "initialCall",
                     )}
                   />
                 </View>
@@ -674,13 +672,13 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
           </Layout>
 
           <React.Fragment>
-            <Text category="h6">{i18n.t('visits')}</Text>
+            <Text category="h6">{i18n.t("visits")}</Text>
             {visits.length > 0 ? (
               <Layout level="2" style={{ gap: 10 }}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                   }}>
                   <Datepicker
                     date={visitDate}
@@ -709,8 +707,8 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                             bounding ? styles.bounding : {},
                             styles.date,
                           ]}>
-                          <Text style={{ textAlign: 'center' }} category="s1">
-                            {moment(date).format('DD')}
+                          <Text style={{ textAlign: "center" }} category="s1">
+                            {moment(date).format("DD")}
                           </Text>
                           {visits?.find(
                             v =>
@@ -719,9 +717,9 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                           ) && (
                             <View
                               style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
                               }}>
                               <StarIcon />
                             </View>
@@ -764,38 +762,38 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
             ) : (
               <React.Fragment>
                 <Text appearance="hint" category="s1">
-                  {`${call.name} ${i18n.t('hasNoVisitsYet')}`}
+                  {`${call.name} ${i18n.t("hasNoVisitsYet")}`}
                 </Text>
                 <Button
                   onPress={() =>
-                    navigation.replace('VisitForm', { callId: call?.id || '' })
+                    navigation.replace("VisitForm", { callId: call?.id || "" })
                   }>
-                  {i18n.t('addVisit')}
+                  {i18n.t("addVisit")}
                 </Button>
               </React.Fragment>
             )}
           </React.Fragment>
 
-          <View style={{ flexDirection: 'column', gap: 5 }}>
+          <View style={{ flexDirection: "column", gap: 5 }}>
             <Divider style={{ marginVertical: 5 }} />
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: "row",
                 gap: 5,
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                alignItems: "center",
+                justifyContent: "space-between",
               }}>
-              <View style={{ flexDirection: 'row', gap: 5 }}>
+              <View style={{ flexDirection: "row", gap: 5 }}>
                 <Text appearance="hint" category="c2">
-                  {i18n.t('created')}
+                  {i18n.t("created")}
                 </Text>
                 <CopyToClipBoardWithTooltip
                   component={copy => (
                     <Text onLongPress={copy} appearance="hint" category="c1">
-                      {moment(call.createdAt).format('dddd, MMMM Do YYYY')}
+                      {moment(call.createdAt).format("dddd, MMMM Do YYYY")}
                     </Text>
                   )}
-                  string={moment(call.createdAt).format('dddd, MMMM Do YYYY')}
+                  string={moment(call.createdAt).format("dddd, MMMM Do YYYY")}
                 />
               </View>
               <Button
@@ -804,17 +802,17 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                 status="danger"
                 accessoryLeft={DeleteIcon}
                 onPress={() => {
-                  Alert.alert(i18n.t('deleteCall'), i18n.t('deleteCaption'), [
+                  Alert.alert(i18n.t("deleteCall"), i18n.t("deleteCaption"), [
                     {
-                      text: i18n.t('cancel'),
-                      style: 'cancel',
+                      text: i18n.t("cancel"),
+                      style: "cancel",
                       onPress: () => {
                         setIsMenuOpen(false);
                       },
                     },
                     {
-                      text: i18n.t('delete'),
-                      style: 'destructive',
+                      text: i18n.t("delete"),
+                      style: "destructive",
                       // If the user confirmed, then we dispatch the action we blocked earlier
                       // This will continue the action that had triggered the removal of the screen
                       onPress: () => {
@@ -824,7 +822,7 @@ const CallDetailsScreen = ({ route, navigation }: CallDetailsProps) => {
                     },
                   ]);
                 }}>
-                {i18n.t('deleteCall')}
+                {i18n.t("deleteCall")}
               </Button>
             </View>
           </View>

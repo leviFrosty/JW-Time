@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   Button,
   ButtonGroup,
@@ -12,42 +12,42 @@ import {
   TopNavigation,
   TopNavigationAction,
   useStyleSheet,
-} from '@ui-kitten/components';
-import { TouchableWebElement } from '@ui-kitten/components/devsupport';
-import { MomentDateService } from '@ui-kitten/moment';
-import * as Haptics from 'expo-haptics';
-import { Formik } from 'formik';
-import moment, { DurationInputArg1, DurationInputArg2 } from 'moment';
-import React, { useCallback, useRef, useState } from 'react';
+} from "@ui-kitten/components";
+import { TouchableWebElement } from "@ui-kitten/components/devsupport";
+import { MomentDateService } from "@ui-kitten/moment";
+import * as Haptics from "expo-haptics";
+import { Formik } from "formik";
+import moment, { DurationInputArg1, DurationInputArg2 } from "moment";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ImageProps,
   Keyboard,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { v4 as uuidv4 } from 'uuid';
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { v4 as uuidv4 } from "uuid";
 
-import 'react-native-get-random-values';
-import Card from '../components/Card';
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import { HomeStackParamList } from '../stacks/ParamLists';
+import "react-native-get-random-values";
+import Card from "../components/Card";
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import { HomeStackParamList } from "../stacks/ParamLists";
 import useServiceRecordStore, {
   ServiceRecord,
   hourInMS,
   minuteInMS,
-} from '../stores/ServiceRecord';
+} from "../stores/ServiceRecord";
 
 const DownArrowIcon = (
   props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name={'arrow-down'} />;
+): React.ReactElement<ImageProps> => <Icon {...props} name={"arrow-down"} />;
 
 type ServiceRecordFormProps = NativeStackScreenProps<
   HomeStackParamList,
-  'ServiceRecordForm'
+  "ServiceRecordForm"
 >;
 
 const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
@@ -82,7 +82,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
     time?: moment.Moment; // moment is used for easy time manipulation. When saved to storage, time value will be converted to MS.
   };
 
-  type InitialValues = Omit<ServiceRecord, 'time'> & TemporaryTime;
+  type InitialValues = Omit<ServiceRecord, "time"> & TemporaryTime;
 
   const formikInitialValues: InitialValues = {
     id: uuidv4(),
@@ -100,28 +100,28 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
   const renderStudyLabel = useCallback(() => {
     return (
       <Text style={{ marginBottom: 3 }} appearance="hint" category="s2">
-        {i18n.t('studies')}
+        {i18n.t("studies")}
       </Text>
     );
   }, []);
   const renderReturnVisitsLabel = useCallback(() => {
     return (
       <Text style={{ marginBottom: 3 }} appearance="hint" category="s2">
-        {i18n.t('returnVisits')}
+        {i18n.t("returnVisits")}
       </Text>
     );
   }, []);
   const renderPlacementsLabel = useCallback(() => {
     return (
       <Text style={{ marginBottom: 3 }} appearance="hint" category="s2">
-        {i18n.t('placements')}
+        {i18n.t("placements")}
       </Text>
     );
   }, []);
   const renderVideoPlacementsLabel = useCallback(() => {
     return (
       <Text style={{ marginBottom: 3 }} appearance="hint" category="s2">
-        {i18n.t('videoPlacements')}
+        {i18n.t("videoPlacements")}
       </Text>
     );
   }, []);
@@ -131,7 +131,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
       <TopNavigation
         alignment="center"
         accessoryLeft={TopNavigationWithBackBottom}
-        title={i18n.t('newServiceEntry')}
+        title={i18n.t("newServiceEntry")}
       />
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -143,7 +143,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                 const { time, hours, minutes, ...values } = input;
                 const quickTimeDiffInMilliseconds = moment(time).diff(
                   startTime.current,
-                  'millisecond',
+                  "millisecond",
                 );
 
                 const manuallyAddedTimeInMilliseconds =
@@ -180,11 +180,11 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                 return (
                   <View style={{ gap: 10 }}>
                     <View style={{ gap: 10 }}>
-                      <Text category="s1">{i18n.t('date')}</Text>
+                      <Text category="s1">{i18n.t("date")}</Text>
                       <Calendar
-                        min={moment().subtract(3, 'year')}
+                        min={moment().subtract(3, "year")}
                         style={{
-                          width: '100%',
+                          width: "100%",
                         }}
                         dateService={new MomentDateService(i18n.locale)}
                         max={moment()}
@@ -203,83 +203,83 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                     </View>
                     <Divider />
                     <View style={{ gap: 10 }}>
-                      <Text category="s1">{i18n.t('activity')}</Text>
+                      <Text category="s1">{i18n.t("activity")}</Text>
                       <Text appearance="hint" category="c2">
-                        {i18n.t('quickSelectTime')}
+                        {i18n.t("quickSelectTime")}
                       </Text>
                       <View style={{ gap: 10 }}>
                         <ButtonGroup style={{ marginTop: -8 }}>
                           <Button
                             style={{
                               opacity: moment(startTime.current)
-                                .add(30, 'minute')
+                                .add(30, "minute")
                                 .isSame(values.time)
                                 ? 1
                                 : 0.7,
                             }}
                             onPress={() =>
-                              handleQuickAddTimeChange(30, 'minutes')
+                              handleQuickAddTimeChange(30, "minutes")
                             }>
-                            {i18n.t('30m')}
+                            {i18n.t("30m")}
                           </Button>
                           <Button
                             style={{
                               opacity: moment(startTime.current)
-                                .add(1, 'hour')
+                                .add(1, "hour")
                                 .isSame(values.time)
                                 ? 1
                                 : 0.7,
                             }}
-                            onPress={() => handleQuickAddTimeChange(1, 'hour')}>
-                            {i18n.t('1hr')}
+                            onPress={() => handleQuickAddTimeChange(1, "hour")}>
+                            {i18n.t("1hr")}
                           </Button>
                           <Button
                             style={{
                               opacity: moment(startTime.current)
-                                .add(90, 'minute')
-                                .isSame(values.time)
-                                ? 1
-                                : 0.7,
-                            }}
-                            onPress={() =>
-                              handleQuickAddTimeChange(90, 'minutes')
-                            }>
-                            {i18n.t('1andHalfHrs')}
-                          </Button>
-                          <Button
-                            style={{
-                              opacity: moment(startTime.current)
-                                .add(2, 'hour')
+                                .add(90, "minute")
                                 .isSame(values.time)
                                 ? 1
                                 : 0.7,
                             }}
                             onPress={() =>
-                              handleQuickAddTimeChange(2, 'hours')
+                              handleQuickAddTimeChange(90, "minutes")
                             }>
-                            {i18n.t('2hrs')}
+                            {i18n.t("1andHalfHrs")}
                           </Button>
                           <Button
                             style={{
                               opacity: moment(startTime.current)
-                                .add(2, 'hour')
-                                .add(30, 'minute')
+                                .add(2, "hour")
                                 .isSame(values.time)
                                 ? 1
                                 : 0.7,
                             }}
                             onPress={() =>
-                              handleQuickAddTimeChange(150, 'minutes')
+                              handleQuickAddTimeChange(2, "hours")
                             }>
-                            {i18n.t('2andHalfHrs')}
+                            {i18n.t("2hrs")}
+                          </Button>
+                          <Button
+                            style={{
+                              opacity: moment(startTime.current)
+                                .add(2, "hour")
+                                .add(30, "minute")
+                                .isSame(values.time)
+                                ? 1
+                                : 0.7,
+                            }}
+                            onPress={() =>
+                              handleQuickAddTimeChange(150, "minutes")
+                            }>
+                            {i18n.t("2andHalfHrs")}
                           </Button>
                         </ButtonGroup>
                         <Text appearance="hint" category="h6">
-                          {i18n.t('OR')}
+                          {i18n.t("OR")}
                         </Text>
-                        <View style={{ flexDirection: 'row', gap: 5 }}>
+                        <View style={{ flexDirection: "row", gap: 5 }}>
                           <Input
-                            label={i18n.t('hours')}
+                            label={i18n.t("hours")}
                             keyboardType="number-pad"
                             value={values.hours.toString()}
                             onChangeText={numberString => {
@@ -298,7 +298,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                             style={{ flex: 1 }}
                           />
                           <Input
-                            label={i18n.t('minutes')}
+                            label={i18n.t("minutes")}
                             value={values.minutes.toString()}
                             onChangeText={numberString => {
                               let number: number;
@@ -326,12 +326,12 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                               ldc: checked,
                             })
                           }>
-                          {i18n.t('ldcTime')}
+                          {i18n.t("ldcTime")}
                         </CheckBox>
                       </View>
                       <Divider />
                       <View style={{ gap: 10 }}>
-                        <View style={{ flexDirection: 'row', gap: 5 }}>
+                        <View style={{ flexDirection: "row", gap: 5 }}>
                           <Input
                             style={{ flex: 1 }}
                             keyboardType="number-pad"
@@ -370,7 +370,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                             }}
                           />
                         </View>
-                        <View style={{ flexDirection: 'row', gap: 5 }}>
+                        <View style={{ flexDirection: "row", gap: 5 }}>
                           <Input
                             style={{ flex: 1 }}
                             keyboardType="number-pad"
@@ -413,16 +413,16 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                     {!warningDismissed && (
                       <Card status="warning">
                         <View
-                          style={{ flexDirection: 'column', gap: 5, flex: 1 }}>
+                          style={{ flexDirection: "column", gap: 5, flex: 1 }}>
                           <View
                             style={{
-                              flexDirection: 'row',
+                              flexDirection: "row",
                               gap: 10,
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
+                              justifyContent: "space-between",
+                              alignItems: "center",
                             }}>
-                            <Text style={{ flex: 1, flexWrap: 'wrap' }}>
-                              {i18n.t('serviceRecordFormWarning')}
+                            <Text style={{ flex: 1, flexWrap: "wrap" }}>
+                              {i18n.t("serviceRecordFormWarning")}
                             </Text>
                             <Button
                               appearance="ghost"
@@ -433,16 +433,16 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                           </View>
                           <View
                             style={{
-                              flexDirection: 'row',
+                              flexDirection: "row",
                               gap: 10,
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
+                              justifyContent: "space-between",
+                              alignItems: "center",
                             }}>
                             <Text
                               style={{ flex: 1 }}
                               appearance="hint"
                               category="c1">
-                              {i18n.t('serviceEntryNewVisitHelper')}
+                              {i18n.t("serviceEntryNewVisitHelper")}
                             </Text>
                             <Button
                               style={{ flex: 1 }}
@@ -450,9 +450,9 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
                               appearance="outline"
                               onPress={() => {
                                 navigation.popToTop();
-                                navigation.navigate('VisitForm');
+                                navigation.navigate("VisitForm");
                               }}>
-                              {i18n.t('createNewVisitEntry')}
+                              {i18n.t("createNewVisitEntry")}
                             </Button>
                           </View>
                         </View>
@@ -466,7 +466,7 @@ const ServiceRecordFormScreen = ({ navigation }: ServiceRecordFormProps) => {
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
       <Button onPress={() => formikRef.current?.handleSubmit()}>
-        {i18n.t('addServiceEntry')}
+        {i18n.t("addServiceEntry")}
       </Button>
     </Layout>
   );

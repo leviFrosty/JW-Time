@@ -1,6 +1,6 @@
-import { Icon } from '@ui-kitten/components';
-import React from 'react';
-import { ImageProps } from 'react-native';
+import { Icon } from "@ui-kitten/components";
+import React from "react";
+import { ImageProps } from "react-native";
 
 export const ExportIcon = (
   props?: Partial<ImageProps>,
@@ -19,22 +19,22 @@ export const DotsIcon = (
 ): React.ReactElement<ImageProps> => <Icon {...props} name="dots-horizontal" />;
 export const DeleteIcon = (
   props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name={'delete'} />;
+): React.ReactElement<ImageProps> => <Icon {...props} name={"delete"} />;
 export const PublisherTypeIcon = (
   props?: Partial<ImageProps>,
-): React.ReactElement<ImageProps> => <Icon {...props} name={'badge-account'} />;
+): React.ReactElement<ImageProps> => <Icon {...props} name={"badge-account"} />;
 export const TargetIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => (
-  <Icon {...props} name={'bullseye-arrow'} />
+  <Icon {...props} name={"bullseye-arrow"} />
 );
 export const SortAscCalendarIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => (
-  <Icon {...props} name={'sort-calendar-ascending'} />
+  <Icon {...props} name={"sort-calendar-ascending"} />
 );
 export const SortDescCalendarIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => (
-  <Icon {...props} name={'sort-calendar-descending'} />
+  <Icon {...props} name={"sort-calendar-descending"} />
 );

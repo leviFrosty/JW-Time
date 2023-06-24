@@ -1,5 +1,5 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { FlashList } from '@shopify/flash-list';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { FlashList } from "@shopify/flash-list";
 import {
   Button,
   Divider,
@@ -8,39 +8,41 @@ import {
   Layout,
   Text,
   useStyleSheet,
-} from '@ui-kitten/components';
-import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport';
-import * as Haptics from 'expo-haptics';
-import moment from 'moment';
-import React, { useMemo, useState } from 'react';
+} from "@ui-kitten/components";
+import { TouchableWithoutFeedback } from "@ui-kitten/components/devsupport";
+import * as Device from "expo-device";
+import * as Haptics from "expo-haptics";
+import * as Notifications from "expo-notifications";
+import moment from "moment";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ImageProps,
   Keyboard,
+  Platform,
   Pressable,
   Share,
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import CallCard from '../components/CallCard';
-import { ExportIcon } from '../components/Icons';
-import MonthReport, { parseForMonthReport } from '../components/MonthReport';
-import ScreenTitle from '../components/ScreenTitle';
-import WeeklyActivityTicks from '../components/WeeklyActivityTicks';
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import useTimer from '../lib/userTimer';
-import { HomeStackParamList } from '../stacks/ParamLists';
-import useCallsStore from '../stores/CallStore';
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import CallCard from "../components/CallCard";
+import { ExportIcon } from "../components/Icons";
+import MonthReport, { parseForMonthReport } from "../components/MonthReport";
+import ScreenTitle from "../components/ScreenTitle";
+import WeeklyActivityTicks from "../components/WeeklyActivityTicks";
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import useTimer from "../lib/userTimer";
+import { HomeStackParamList } from "../stacks/ParamLists";
+import useCallsStore from "../stores/CallStore";
 import useServiceRecordStore, {
   MonthReportData,
-} from '../stores/ServiceRecord';
-import useSettingStore from '../stores/SettingsStore';
-import useVisitsStore from '../stores/VisitStore';
+} from "../stores/ServiceRecord";
+import useSettingStore from "../stores/SettingsStore";
+import useVisitsStore from "../stores/VisitStore";
 
-type HomeProps = NativeStackScreenProps<HomeStackParamList, 'Dashboard'>;
+type HomeProps = NativeStackScreenProps<HomeStackParamList, "Dashboard">;
 
 export type Sheet = {
   isOpen: boolean;
@@ -68,12 +70,19 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
   const { play, pause, reset, formattedTime, hasStarted, isRunning } =
     useTimer();
   const [debug, setDebug] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const { resetAllSettings } = useSettingStore();
   const { calls, deleteAllCalls } = useCallsStore();
   const { records, deleteAllRecords } = useServiceRecordStore();
   const { visits, deleteAllVisits } = useVisitsStore();
   const insets = useSafeAreaInsets();
+
+  const [expoPushToken, setExpoPushToken] = useState<string | void>();
+  const [notification, setNotification] = useState<
+    Notifications.Notification | boolean
+  >(false);
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
 
   const monthReport = useMemo((): MonthReportData => {
     const month = moment().month();
@@ -94,7 +103,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
   const themeStyles = StyleSheet.create({
     wrapper: {
       flex: 1,
-      position: 'relative',
+      position: "relative",
       paddingTop: insets.top + 20,
       paddingRight: appTheme.contentPaddingLeftRight,
       paddingLeft: appTheme.contentPaddingLeftRight,
@@ -104,7 +113,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
       gap: 20,
     },
     fab: {
-      position: 'absolute',
+      position: "absolute",
       paddingBottom: 90,
       paddingRight: 10,
     },
@@ -117,14 +126,92 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
     [hasStarted, isRunning],
   ); // would otherwise run each on clock tick.
 
+  async function schedulePushNotification() {
+    const identifier = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got mail! 📬",
+        body: "Here is the notification body",
+        data: { data: "goes here" },
+        subtitle: "Subtitle here!",
+      },
+      trigger: { seconds: 1, repeats: true },
+    });
+    await Notifications.cancelScheduledNotificationAsync(identifier);
+  }
+
+  async function registerForPushNotificationsAsync() {
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (!Device.isDevice) {
+      return alert("Must use physical device for Push Notifications");
+    }
+
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+
+    return token;
+  }
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
+
+    return () => {
+      if (notificationListener.current) {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current,
+        );
+      }
+      if (responseListener.current) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
+
   return (
     <Layout style={styles.wrapper}>
       <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
         <View style={styles.content}>
+          <Text>Something</Text>
+          <Button onPress={schedulePushNotification}>Get Notification</Button>
           <View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: "row" }}>
               {isInService && (
-                <View style={{ flexDirection: 'row', flexShrink: 1, gap: 5 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexShrink: 1,
+                    gap: 5,
+                  }}>
                   {isRunning ? (
                     <Button accessoryLeft={PauseIcon} onPress={pause} />
                   ) : (
@@ -138,9 +225,9 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
                 </View>
               )}
               <ScreenTitle
-                title={isInService ? formattedTime : i18n.t('dashboard')}
+                title={isInService ? formattedTime : i18n.t("dashboard")}
                 icon="cog"
-                status={isInService ? 'success' : 'basic'}
+                status={isInService ? "success" : "basic"}
                 onIconLongPress={() => {
                   Haptics.notificationAsync(
                     Haptics.NotificationFeedbackType.Warning,
@@ -148,16 +235,16 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
                   setDebug(!debug);
                 }}
                 onIconPress={() => {
-                  navigation.navigate('Settings');
+                  navigation.navigate("Settings");
                 }}
               />
             </View>
             <View>
               {isInService ? (
                 <React.Fragment>
-                  <Text>{i18n.t('youAreInService!')}</Text>
+                  <Text>{i18n.t("youAreInService!")}</Text>
                   <Text appearance="hint" category="c1">
-                    {i18n.t('stopTimeWillAutomaticallyAddToReport')}
+                    {i18n.t("stopTimeWillAutomaticallyAddToReport")}
                   </Text>
                 </React.Fragment>
               ) : (
@@ -167,15 +254,19 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
           </View>
           <View style={{ gap: 10 }}>
             <View
-              style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
+              style={{
+                flexDirection: "row",
+                gap: 5,
+                alignItems: "center",
+              }}>
               <Pressable
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  navigation.navigate('AnnualReport', {
+                  navigation.navigate("AnnualReport", {
                     year: moment().year(),
                   });
                 }}>
-                <Text category="h4">{i18n.t('monthlyTotals')}</Text>
+                <Text category="h4">{i18n.t("monthlyTotals")}</Text>
               </Pressable>
               <Button
                 appearance="ghost"
@@ -184,7 +275,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
                 onPress={async () =>
                   await Share.share({
                     title: monthReport.share?.title,
-                    message: monthReport.share?.message || '',
+                    message: monthReport.share?.message || "",
                   })
                 }
               />
@@ -192,7 +283,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
             <TouchableOpacity
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                navigation.navigate('AnnualReport', { year: moment().year() });
+                navigation.navigate("AnnualReport", { year: moment().year() });
               }}>
               <MonthReport report={monthReport} />
             </TouchableOpacity>
@@ -213,9 +304,13 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
                 data={queriedCalls || calls}
                 ListEmptyComponent={
                   query ? (
-                    <Text style={{ marginHorizontal: 5 }} appearance="hint">
+                    <Text
+                      style={{
+                        marginHorizontal: 5,
+                      }}
+                      appearance="hint">
                       <React.Fragment>
-                        {i18n.t('noResultsForQuery')}"
+                        {i18n.t("noResultsForQuery")}"
                         <Text category="c2">{query}</Text>
                         "...
                       </React.Fragment>
@@ -223,7 +318,12 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
                   ) : undefined
                 }
                 ItemSeparatorComponent={props => (
-                  <Divider style={{ marginVertical: 5 }} {...props} />
+                  <Divider
+                    style={{
+                      marginVertical: 5,
+                    }}
+                    {...props}
+                  />
                 )}
                 estimatedItemSize={60}
                 renderItem={({ item }) => <CallCard call={item} />}
@@ -255,7 +355,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
               appearance="outline"
               status="success"
               onPress={() => (isRunning ? pause() : play())}>
-              {isRunning ? 'Pause Timer' : 'Start Timer'}
+              {isRunning ? "Pause Timer" : "Start Timer"}
             </Button>
             <Button appearance="outline" status="warning" onPress={reset}>
               Stop timer
@@ -264,7 +364,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
             <Button
               appearance="outline"
               status="success"
-              onPress={() => navigation.navigate('ServiceRecordForm')}>
+              onPress={() => navigation.navigate("ServiceRecordForm")}>
               Create Service Record
             </Button>
             <Button
@@ -295,7 +395,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
         )}
         <Button
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: 15,
             right: 10,
             shadowRadius: 2,
@@ -308,7 +408,7 @@ const DashboardScreen = ({ navigation }: HomeProps) => {
           accessoryLeft={PlusIcon}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-            navigation.navigate('CallForm');
+            navigation.navigate("CallForm");
           }}
         />
       </TouchableWithoutFeedback>

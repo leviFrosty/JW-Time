@@ -1,7 +1,7 @@
-import { Button, Icon, Text } from '@ui-kitten/components';
-import * as Haptics from 'expo-haptics';
-import React from 'react';
-import { ImageProps, StyleSheet, View } from 'react-native';
+import { Button, Icon, Text } from "@ui-kitten/components";
+import * as Haptics from "expo-haptics";
+import React from "react";
+import { ImageProps, StyleSheet, View } from "react-native";
 
 interface ScreenTitleProps {
   title: string;
@@ -23,9 +23,9 @@ const ScreenTitle: React.FC<ScreenTitleProps> = ({
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
       marginBottom: 10,
     },
   });
@@ -33,7 +33,7 @@ const ScreenTitle: React.FC<ScreenTitleProps> = ({
   const SelectedIcon = (
     props?: Partial<ImageProps>,
   ): React.ReactElement<ImageProps> => (
-    <Icon {...props} name={icon || 'help'} />
+    <Icon {...props} name={icon || "help"} />
   );
 
   const handlePress = () => {
@@ -43,7 +43,7 @@ const ScreenTitle: React.FC<ScreenTitleProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text category={category || 'h1'} status={status || 'basic'}>
+      <Text category={category || "h1"} status={status || "basic"}>
         {title}
       </Text>
       {icon && (

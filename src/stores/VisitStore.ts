@@ -1,10 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import _ from 'lodash';
-import moment from 'moment';
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import _ from "lodash";
+import moment from "moment";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-import Asset from './asset';
+import Asset from "./asset";
 
 export const getCallMostRecentVisit = (visits: Visit[], callId?: string) => {
   if (!callId) {
@@ -81,7 +81,7 @@ const useVisitsStore = create(
       deleteAllVisits: () => set({ visits: [] }),
     }),
     {
-      name: 'visitsStore', // unique name
+      name: "visitsStore", // unique name
       storage: createJSONStorage(() => AsyncStorage),
     },
   ),

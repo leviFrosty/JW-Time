@@ -1,5 +1,5 @@
-import throttle from 'lodash.throttle';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import throttle from "lodash.throttle";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const useTimer = (initialTimeInMs = 0, onFinish = () => null) => {
   const [elapsedInMs, setElapsedInMs] = useState(0);
@@ -104,7 +104,7 @@ const useTimer = (initialTimeInMs = 0, onFinish = () => null) => {
   seconds %= 60;
 
   const padStart = (num: number) => {
-    return num.toString().padStart(2, '0');
+    return num.toString().padStart(2, "0");
   };
 
   const formattedTime = `${padStart(hours)}:${padStart(minutes)}:${padStart(

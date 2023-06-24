@@ -1,9 +1,9 @@
-import { Tooltip } from '@ui-kitten/components';
-import * as Clipboard from 'expo-clipboard';
-import * as Haptics from 'expo-haptics';
-import React, { useState } from 'react';
+import { Tooltip } from "@ui-kitten/components";
+import * as Clipboard from "expo-clipboard";
+import * as Haptics from "expo-haptics";
+import React, { useState } from "react";
 
-import { i18n } from '../lib/translations';
+import { i18n } from "../lib/translations";
 
 interface CopyToClipboardProps {
   string: string;
@@ -36,7 +36,7 @@ const CopyToClipBoardWithTooltip: React.FC<CopyToClipboardProps> = ({
       visible={showTooltip}
       anchor={() => component(copyToClipboard)}
       onBackdropPress={() => setShowTooltip(false)}>
-      {i18n.t('copied!')}
+      {i18n.t("copied!")}
     </Tooltip>
   );
 };

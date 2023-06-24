@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   Button,
   Divider,
@@ -11,30 +11,30 @@ import {
   Text,
   useStyleSheet,
   useTheme,
-} from '@ui-kitten/components';
-import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport';
-import * as Haptics from 'expo-haptics';
-import * as Location from 'expo-location';
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, ImageProps, Keyboard, StyleSheet, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import MapView, { Callout, Marker, Region } from 'react-native-maps';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "@ui-kitten/components";
+import { TouchableWithoutFeedback } from "@ui-kitten/components/devsupport";
+import * as Haptics from "expo-haptics";
+import * as Location from "expo-location";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, ImageProps, Keyboard, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import MapView, { Callout, Marker, Region } from "react-native-maps";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import TopNavBarWithBackButton from '../components/TopNavBarWithBackButton';
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import { HomeStackParamList } from '../stacks/ParamLists';
+import TopNavBarWithBackButton from "../components/TopNavBarWithBackButton";
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import { HomeStackParamList } from "../stacks/ParamLists";
 import useCallsStore, {
   Call,
   InterestLevel,
   interestLevels,
   newCallBase,
-} from '../stores/CallStore';
+} from "../stores/CallStore";
 
 type CallFormScreenProps = NativeStackScreenProps<
   HomeStackParamList,
-  'CallForm'
+  "CallForm"
 >;
 
 interface InterestLevelIconProps extends Partial<ImageProps> {
@@ -60,7 +60,7 @@ const DeleteIcon = (
   props?: Partial<ImageProps>,
 ): React.ReactElement<ImageProps> => <Icon {...props} name="delete" />;
 const CheckIcon = (): React.ReactElement<ImageProps> => (
-  <Icon style={{ height: 20, width: 20, color: '#00E096' }} name="check" />
+  <Icon style={{ height: 20, width: 20, color: "#00E096" }} name="check" />
 );
 const CloseIcon = (
   props?: Partial<ImageProps>,
@@ -68,16 +68,16 @@ const CloseIcon = (
 
 export const getInterestLevelIcon = (interestLevel: InterestLevel) => {
   switch (interestLevel) {
-    case 'not-interested':
-      return 'hand-back-left';
-    case 'little-interested':
-      return 'hand-extended';
-    case 'interested':
-      return 'hands-pray';
-    case 'hungry':
-      return 'silverware-fork-knife';
+    case "not-interested":
+      return "hand-back-left";
+    case "little-interested":
+      return "hand-extended";
+    case "interested":
+      return "hands-pray";
+    case "hungry":
+      return "silverware-fork-knife";
     default:
-      return 'help';
+      return "help";
   }
 };
 
@@ -89,23 +89,23 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
   const insets = useSafeAreaInsets();
   const themedStyles = StyleSheet.create({
     wrapper: {
-      height: '100%',
+      height: "100%",
       paddingTop: insets.top,
       paddingLeft: appTheme.contentPaddingLeftRight,
       paddingRight: appTheme.contentPaddingLeftRight,
       paddingBottom: insets.bottom + 10,
     },
     map: {
-      height: '100%',
-      width: '100%',
+      height: "100%",
+      width: "100%",
     },
     successBadge: {
-      flexDirection: 'row',
+      flexDirection: "row",
       paddingHorizontal: 10,
       paddingVertical: 10,
       borderRadius: appTheme.borderRadius,
-      backgroundColor: 'color-success-900',
-      alignItems: 'center',
+      backgroundColor: "color-success-900",
+      alignItems: "center",
     },
   });
   const styles = useStyleSheet(themedStyles);
@@ -119,15 +119,15 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
   >(
     callToEdit
       ? new IndexPath(
-          interestLevels.indexOf(newCallFromState.interestLevel || '') === -1
+          interestLevels.indexOf(newCallFromState.interestLevel || "") === -1
             ? 0
-            : interestLevels.indexOf(newCallFromState.interestLevel || ''),
+            : interestLevels.indexOf(newCallFromState.interestLevel || ""),
         )
       : new IndexPath(1),
   );
   const [useAddressLine2, setUseAddressLine2] = useState(false);
   const [hasManuallyRemovedPin, setHasManuallyRemovedPin] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
   const [showMap, setShowMap] = useState(false);
   const [location, setLocation] = useState<Location.LocationObject>();
   const mapRef = useRef<MapView>(null);
@@ -171,8 +171,8 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
     (async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg(i18n.t('permissionToAccessLocationDenied'));
+        if (status !== "granted") {
+          setErrorMsg(i18n.t("permissionToAccessLocationDenied"));
           return;
         }
 
@@ -219,9 +219,9 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
     setHasManuallyRemovedPin(false);
     setUseAddressLine2(false);
     if (callToEdit) {
-      navigation.replace('CallDetails', { callId: newCallFromState.id });
+      navigation.replace("CallDetails", { callId: newCallFromState.id });
     } else {
-      navigation.replace('VisitForm', { callId: newCallFromState.id });
+      navigation.replace("VisitForm", { callId: newCallFromState.id });
     }
   };
 
@@ -298,7 +298,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
   const handleRenderTextErrorCaption = () => {
     return validation.name ? (
       <Text category="label" status="danger">
-        {i18n.t('formNameRequired')}
+        {i18n.t("formNameRequired")}
       </Text>
     ) : (
       <React.Fragment />
@@ -310,19 +310,19 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
       <TopNavBarWithBackButton
         title={
           callToEdit
-            ? `${i18n.t('editing')} ${newCallFromState.name}`
-            : i18n.t('newCall')
+            ? `${i18n.t("editing")} ${newCallFromState.name}`
+            : i18n.t("newCall")
         }
         iconLeft={CloseIcon}
         onPressLeft={() =>
           Alert.alert(
-            i18n.t('discardChanges'),
-            i18n.t('unsavedChangesOnScreen'),
+            i18n.t("discardChanges"),
+            i18n.t("unsavedChangesOnScreen"),
             [
-              { text: i18n.t('dontLeave'), style: 'cancel', onPress: () => {} },
+              { text: i18n.t("dontLeave"), style: "cancel", onPress: () => {} },
               {
-                text: i18n.t('discard'),
-                style: 'destructive',
+                text: i18n.t("discard"),
+                style: "destructive",
                 // If the user confirmed, then we dispatch the action we blocked earlier
                 // This will continue the action that had triggered the removal of the screen
                 onPress: () => navigation.goBack(),
@@ -337,31 +337,31 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ gap: 8 }}>
             <Text style={{ marginBottom: 2 }} category="s1">
-              {i18n.t('personalInfo')}
+              {i18n.t("personalInfo")}
             </Text>
             <Input
               clearButtonMode="while-editing"
               accessoryLeft={ContactIcon}
               autoFocus={!callIdFromRoute}
-              label={i18n.t('name')}
-              placeholder={i18n.t('enterName')}
+              label={i18n.t("name")}
+              placeholder={i18n.t("enterName")}
               caption={handleRenderTextErrorCaption}
               value={newCallFromState.name}
-              status={validation.name ? 'danger' : 'basic'}
+              status={validation.name ? "danger" : "basic"}
               onChangeText={name => setCallState({ ...newCallFromState, name })}
             />
           </View>
           <Divider style={{ margin: 12 }} />
           <View style={{ gap: 8 }}>
             <Text style={{ marginBottom: 2 }} category="s1">
-              {i18n.t('address')}
+              {i18n.t("address")}
             </Text>
             <Input
-              placeholder={`${i18n.t('addressLine1Placeholder')} ${i18n.t(
-                'optional',
+              placeholder={`${i18n.t("addressLine1Placeholder")} ${i18n.t(
+                "optional",
               )}`}
-              label={i18n.t('addressLine1')}
-              value={newCallFromState.address?.line1 || ''}
+              label={i18n.t("addressLine1")}
+              value={newCallFromState.address?.line1 || ""}
               onChangeText={line1 =>
                 setCallState({
                   ...newCallFromState,
@@ -371,11 +371,11 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
             />
             {useAddressLine2 && (
               <Input
-                label={i18n.t('addressLine2')}
-                placeholder={`${i18n.t('addressLine2Placeholder')} ${i18n.t(
-                  'optional',
+                label={i18n.t("addressLine2")}
+                placeholder={`${i18n.t("addressLine2Placeholder")} ${i18n.t(
+                  "optional",
                 )}`}
-                value={newCallFromState.address?.line2 || ''}
+                value={newCallFromState.address?.line2 || ""}
                 onChangeText={line2 =>
                   setCallState({
                     ...newCallFromState,
@@ -384,7 +384,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
                 }
               />
             )}
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: "row" }}>
               <View style={{ flexShrink: 1 }}>
                 {!useAddressLine2 ? (
                   <Button
@@ -392,7 +392,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
                     size="small"
                     onPress={() => setUseAddressLine2(true)}
                     accessoryLeft={PlusIcon}>
-                    {i18n.t('addLine')}
+                    {i18n.t("addLine")}
                   </Button>
                 ) : (
                   <Button
@@ -409,7 +409,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
                       setUseAddressLine2(false);
                     }}
                     accessoryLeft={MinusIcon}>
-                    {i18n.t('removeLine')}
+                    {i18n.t("removeLine")}
                   </Button>
                 )}
               </View>
@@ -417,14 +417,14 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <View style={{ flexGrow: 1 }} />
             </View>
 
-            <View style={{ flexDirection: 'row', gap: 3 }}>
+            <View style={{ flexDirection: "row", gap: 3 }}>
               <Input
                 style={{ flex: 1 }}
-                label={i18n.t('city')}
-                placeholder={`${i18n.t('callCityPlaceholder')} ${i18n.t(
-                  'optional',
+                label={i18n.t("city")}
+                placeholder={`${i18n.t("callCityPlaceholder")} ${i18n.t(
+                  "optional",
                 )}`}
-                value={newCallFromState.address?.city || ''}
+                value={newCallFromState.address?.city || ""}
                 onChangeText={city =>
                   setCallState({
                     ...newCallFromState,
@@ -434,11 +434,11 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               />
               <Input
                 style={{ flex: 1 }}
-                label={i18n.t('state')}
-                placeholder={`${i18n.t('callStatePlaceholder')} ${i18n.t(
-                  'optional',
+                label={i18n.t("state")}
+                placeholder={`${i18n.t("callStatePlaceholder")} ${i18n.t(
+                  "optional",
                 )}`}
-                value={newCallFromState.address?.state || ''}
+                value={newCallFromState.address?.state || ""}
                 onChangeText={state =>
                   setCallState({
                     ...newCallFromState,
@@ -448,16 +448,16 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               />
             </View>
 
-            <View style={{ flexDirection: 'row', gap: 3 }}>
+            <View style={{ flexDirection: "row", gap: 3 }}>
               <Input
                 style={{ flex: 1 }}
-                label={i18n.t('postalCode')}
-                placeholder={`${i18n.t('callPostalCodePlaceholder')} ${i18n.t(
-                  'optional',
+                label={i18n.t("postalCode")}
+                placeholder={`${i18n.t("callPostalCodePlaceholder")} ${i18n.t(
+                  "optional",
                 )}`}
-                caption={i18n.t('callPostalCodeCaption')}
+                caption={i18n.t("callPostalCodeCaption")}
                 keyboardType="number-pad"
-                value={newCallFromState.address?.postalCode || ''}
+                value={newCallFromState.address?.postalCode || ""}
                 onChangeText={postalCode =>
                   setCallState({
                     ...newCallFromState,
@@ -467,11 +467,11 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               />
               <Input
                 style={{ flex: 1 }}
-                label={i18n.t('country')}
-                placeholder={`${i18n.t('callCountryPlaceholder')} ${i18n.t(
-                  'optional',
+                label={i18n.t("country")}
+                placeholder={`${i18n.t("callCountryPlaceholder")} ${i18n.t(
+                  "optional",
                 )}`}
-                value={newCallFromState.address?.country || ''}
+                value={newCallFromState.address?.country || ""}
                 onChangeText={country =>
                   setCallState({
                     ...newCallFromState,
@@ -485,27 +485,27 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
               <View style={{ marginVertical: 10 }}>
                 <View
                   style={{
-                    width: '100%',
+                    width: "100%",
                     flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}>
-                  <Text category="s1">{i18n.t('map')}</Text>
+                  <Text category="s1">{i18n.t("map")}</Text>
                   {newCallFromState.address?.coordinates?.latitude &&
                     newCallFromState.address?.coordinates?.longitude && (
                       <Button
                         appearance="ghost"
                         size="tiny"
                         onPress={removePin}>
-                        {i18n.t('removePin')}
+                        {i18n.t("removePin")}
                       </Button>
                     )}
                 </View>
 
                 <Text appearance="hint" category="c1">
-                  {i18n.t('newCallMovePinDescription')}
+                  {i18n.t("newCallMovePinDescription")}
                 </Text>
-                <View style={{ height: 300, width: '100%', marginTop: 5 }}>
+                <View style={{ height: 300, width: "100%", marginTop: 5 }}>
                   <MapView
                     initialRegion={initialMapView}
                     style={styles.map}
@@ -532,22 +532,22 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
                           <Callout>
                             <Layout
                               style={{
-                                height: '100%',
-                                width: '100%',
+                                height: "100%",
+                                width: "100%",
                                 paddingVertical: 5,
                                 paddingHorizontal: 15,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
                                 borderRadius: appTheme.borderRadius,
                               }}>
                               <Text
                                 category="s1"
                                 style={{
                                   backgroundColor:
-                                    theme['background-basic-color-1'],
+                                    theme["background-basic-color-1"],
                                 }}>
-                                {newCallFromState.name || i18n.t('newCall')}
+                                {newCallFromState.name || i18n.t("newCall")}
                               </Text>
                             </Layout>
                           </Callout>
@@ -557,31 +557,31 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
                 </View>
                 {!hasPin() && (
                   <Button onPress={addPinFromCurrentLocation}>
-                    {i18n.t('addPin')}
+                    {i18n.t("addPin")}
                   </Button>
                 )}
                 {hasPin() && (
                   <Button appearance="ghost" onPress={fitToCoordinates}>
-                    {i18n.t('fitViewToPin')}
+                    {i18n.t("fitViewToPin")}
                   </Button>
                 )}
               </View>
             )}
             {errorMsg && (
               <Text category="h6" status="danger">
-                {`${i18n.t('error')}: ${errorMsg}`}
+                {`${i18n.t("error")}: ${errorMsg}`}
               </Text>
             )}
             <Button
-              appearance={showMap ? 'outline' : 'ghost'}
+              appearance={showMap ? "outline" : "ghost"}
               onPress={handleToggleMap}>
-              {showMap ? i18n.t('hideMap') : i18n.t('pinOnMap')}
+              {showMap ? i18n.t("hideMap") : i18n.t("pinOnMap")}
             </Button>
             {!showMap && hasPin() && (
               <View style={styles.successBadge}>
                 <CheckIcon />
                 <Text style={{ marginLeft: 8 }} category="s1">
-                  {i18n.t('pinAddedToCall')}
+                  {i18n.t("pinAddedToCall")}
                 </Text>
               </View>
             )}
@@ -589,23 +589,23 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
           <Divider style={{ margin: 12 }} />
           <View style={{ gap: 8 }}>
             <Text style={{ marginBottom: 2 }} category="s1">
-              {i18n.t('moreDetails')}
+              {i18n.t("moreDetails")}
             </Text>
             <Input
               accessoryLeft={NoteIcon}
-              label={i18n.t('note')}
-              placeholder={`${i18n.t('callNotePlaceholder')} ${i18n.t(
-                'optional',
+              label={i18n.t("note")}
+              placeholder={`${i18n.t("callNotePlaceholder")} ${i18n.t(
+                "optional",
               )}`}
               multiline={true}
-              value={newCallFromState.note || ''}
+              value={newCallFromState.note || ""}
               onChangeText={note => setCallState({ ...newCallFromState, note })}
             />
             <Select
               label={evaProps => (
-                <Text {...evaProps}>{i18n.t('interestLevel')}</Text>
+                <Text {...evaProps}>{i18n.t("interestLevel")}</Text>
               )}
-              placeholder={i18n.t('interestLevel')}
+              placeholder={i18n.t("interestLevel")}
               selectedIndex={interestLevelIndex}
               // @ts-ignore
               value={i18n.t(interestLevels[interestLevelIndex.row])}
@@ -627,7 +627,7 @@ const CallFormScreen: React.FC<CallFormScreenProps> = ({
           <Divider style={{ margin: 12 }} />
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
-      <Button onPress={() => validate()}>{i18n.t('save')}</Button>
+      <Button onPress={() => validate()}>{i18n.t("save")}</Button>
     </Layout>
   );
 };

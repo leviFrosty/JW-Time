@@ -8,6 +8,7 @@
     "prettier/prettier": [
       "error",
       {
+        "singleQuote": false,
         "endOfLine": "auto"
       }
     ],

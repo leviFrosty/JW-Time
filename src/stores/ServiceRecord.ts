@@ -1,13 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import _ from 'lodash';
-import moment from 'moment';
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import _ from "lodash";
+import moment from "moment";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-import Asset from './asset';
+import Asset from "./asset";
 
 export interface AnnualReportData
-  extends Omit<MonthReportData, 'studies' | 'month'> {
+  extends Omit<MonthReportData, "studies" | "month"> {
   year: number;
 }
 export interface MonthReportData {
@@ -78,7 +78,7 @@ const useServiceRecordStore = create(
       deleteAllRecords: () => set({ records: [] }),
     }),
     {
-      name: 'serviceRecordStore', // unique name
+      name: "serviceRecordStore", // unique name
       storage: createJSONStorage(() => AsyncStorage),
     },
   ),

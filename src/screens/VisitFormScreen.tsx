@@ -1,5 +1,5 @@
-import RNDateTimePicker from '@react-native-community/datetimepicker';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -12,13 +12,13 @@ import {
   Layout,
   Text,
   Toggle,
-} from '@ui-kitten/components';
-import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport';
-import { MomentDateService } from '@ui-kitten/moment';
-import * as Haptics from 'expo-haptics';
-import { Formik } from 'formik';
-import moment from 'moment';
-import React, { useRef, useState } from 'react';
+} from "@ui-kitten/components";
+import { TouchableWithoutFeedback } from "@ui-kitten/components/devsupport";
+import { MomentDateService } from "@ui-kitten/moment";
+import * as Haptics from "expo-haptics";
+import { Formik } from "formik";
+import moment from "moment";
+import React, { useRef, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -26,23 +26,23 @@ import {
   Keyboard,
   StyleSheet,
   View,
-} from 'react-native';
-import 'react-native-get-random-values';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { v4 as uuidv4 } from 'uuid';
-import * as Yup from 'yup';
+} from "react-native";
+import "react-native-get-random-values";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { v4 as uuidv4 } from "uuid";
+import * as Yup from "yup";
 
-import TopNavBarWithBackButton from '../components/TopNavBarWithBackButton';
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import { HomeStackParamList } from '../stacks/ParamLists';
-import useCallsStore, { Call } from '../stores/CallStore';
-import useVisitsStore, { Visit } from '../stores/VisitStore';
+import TopNavBarWithBackButton from "../components/TopNavBarWithBackButton";
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import { HomeStackParamList } from "../stacks/ParamLists";
+import useCallsStore, { Call } from "../stores/CallStore";
+import useVisitsStore, { Visit } from "../stores/VisitStore";
 
 type VisitFormScreenProps = NativeStackScreenProps<
   HomeStackParamList,
-  'VisitForm'
+  "VisitForm"
 >;
 
 const filter = (call: Call, query: string) =>
@@ -101,7 +101,7 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
   const renderOption = (call: Call, key: number) => {
     return (
       <AutocompleteItem
-        style={{ minWidth: Dimensions.get('window').width - 20 }}
+        style={{ minWidth: Dimensions.get("window").width - 20 }}
         key={key}
         title={call.name}
       />
@@ -114,13 +114,13 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
         iconLeft={CloseIcon}
         onPressLeft={() =>
           Alert.alert(
-            i18n.t('discardVisit'),
-            i18n.t('unsavedChangesOnScreen'),
+            i18n.t("discardVisit"),
+            i18n.t("unsavedChangesOnScreen"),
             [
-              { text: i18n.t('dontLeave'), style: 'cancel', onPress: () => {} },
+              { text: i18n.t("dontLeave"), style: "cancel", onPress: () => {} },
               {
-                text: i18n.t('discardVisit'),
-                style: 'destructive',
+                text: i18n.t("discardVisit"),
+                style: "destructive",
                 // If the user confirmed, then we dispatch the action we blocked earlier
                 // This will continue the action that had triggered the removal of the screen
                 onPress: () => navigation.goBack(),
@@ -128,7 +128,7 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
             ],
           )
         }
-        title={i18n.t('newVisit')}
+        title={i18n.t("newVisit")}
       />
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -137,28 +137,28 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
             initialValues={{
               query: {
                 id: callIdFromParams,
-                name: call?.name ?? '',
+                name: call?.name ?? "",
               },
               visit: {
                 id: uuidv4(),
                 call: {
-                  id: callIdFromParams ?? '',
+                  id: callIdFromParams ?? "",
                 },
                 date: moment(),
                 time: new Date(),
-                topic: '',
-                note: '',
-                placement: '',
-                videoPlacement: '',
+                topic: "",
+                note: "",
+                placement: "",
+                videoPlacement: "",
                 doNotCountTowardsStudy: false,
-                partners: '',
+                partners: "",
                 nextVisit: {
-                  date: moment().add(1, 'week'),
+                  date: moment().add(1, "week"),
                   time: new Date(),
                   notifyMe: true,
-                  linkTopic: '',
-                  linkScripture: '',
-                  linkNote: '',
+                  linkTopic: "",
+                  linkScripture: "",
+                  linkNote: "",
                 },
               },
             }}
@@ -214,20 +214,20 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
 
               setVisit(withNextVisitDateTime);
               navigation.popToTop();
-              navigation.push('CallDetails', { callId: visit.call.id });
+              navigation.push("CallDetails", { callId: visit.call.id });
             }}>
             {({ values, handleBlur, setValues, errors, touched }) => {
               const onChangeText = (query: string) => {
                 setValues({
                   ...values,
                   query: {
-                    id: '',
+                    id: "",
                     name: query,
                   },
                   visit: {
                     ...values.visit,
                     call: {
-                      id: '',
+                      id: "",
                     },
                   },
                 });
@@ -250,33 +250,33 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
               return (
                 <View style={{ gap: 10, paddingBottom: 30 }}>
                   <View style={{ gap: 10 }}>
-                    <Text category="s1">{i18n.t('call')}</Text>
+                    <Text category="s1">{i18n.t("call")}</Text>
                     <Autocomplete
                       clearButtonMode="while-editing"
                       accessoryLeft={ContactIcon}
                       status={
-                        touched.query && errors.visit?.call ? 'danger' : 'basic'
+                        touched.query && errors.visit?.call ? "danger" : "basic"
                       }
                       autoFocus={!values.query.id}
-                      placeholder={i18n.t('searchForCall')}
+                      placeholder={i18n.t("searchForCall")}
                       value={values.query.name}
-                      onBlur={handleBlur('query')}
+                      onBlur={handleBlur("query")}
                       onSelect={onSelect}
                       onChangeText={onChangeText}>
                       {data.map(renderOption)}
                     </Autocomplete>
                     {touched.query && errors.visit?.call && (
-                      <Text status="danger">{i18n.t('mustSelectCall')}</Text>
+                      <Text status="danger">{i18n.t("mustSelectCall")}</Text>
                     )}
                   </View>
 
                   <View style={{ gap: 10 }}>
-                    <Text category="s1">{i18n.t('visitDetails')}</Text>
+                    <Text category="s1">{i18n.t("visitDetails")}</Text>
                     <Datepicker
                       accessoryRight={CalendarIcon}
-                      label={i18n.t('date')}
+                      label={i18n.t("date")}
                       dateService={new MomentDateService(i18n.locale)}
-                      onBlur={() => handleBlur('visit.date')}
+                      onBlur={() => handleBlur("visit.date")}
                       date={values.visit.date}
                       onSelect={date =>
                         setValues({
@@ -287,12 +287,12 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <View
                       style={{
-                        flexDirection: 'column',
+                        flexDirection: "column",
                         gap: 3,
-                        alignItems: 'flex-start',
+                        alignItems: "flex-start",
                       }}>
                       <Text appearance="hint" category="c2">
-                        {i18n.t('time')}
+                        {i18n.t("time")}
                       </Text>
                       <RNDateTimePicker
                         style={{
@@ -316,11 +316,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     </View>
                     <Input
                       accessoryLeft={HookIcon}
-                      label={i18n.t('topic')}
+                      label={i18n.t("topic")}
                       autoFocus={!!values.query.id}
                       value={values.visit.topic}
-                      placeholder={`${i18n.t('visitTopicPlaceholder')} ${i18n.t(
-                        'optional',
+                      placeholder={`${i18n.t("visitTopicPlaceholder")} ${i18n.t(
+                        "optional",
                       )}`}
                       onChangeText={topic =>
                         setValues({
@@ -332,10 +332,10 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     <Input
                       accessoryLeft={NoteIcon}
                       value={values.visit.note}
-                      label={i18n.t('note')}
+                      label={i18n.t("note")}
                       multiline
-                      placeholder={`${i18n.t('visitNotePlaceholder')} ${i18n.t(
-                        'optional',
+                      placeholder={`${i18n.t("visitNotePlaceholder")} ${i18n.t(
+                        "optional",
                       )}`}
                       onChangeText={note =>
                         setValues({
@@ -346,11 +346,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <Input
                       accessoryLeft={HandIcon}
-                      label={i18n.t('placement')}
+                      label={i18n.t("placement")}
                       value={values.visit.placement}
                       placeholder={`${i18n.t(
-                        'visitPlacementPlaceholder',
-                      )} ${i18n.t('optional')}`}
+                        "visitPlacementPlaceholder",
+                      )} ${i18n.t("optional")}`}
                       onChangeText={placement =>
                         setValues({
                           ...values,
@@ -360,11 +360,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <Input
                       accessoryLeft={VideoIcon}
-                      label={i18n.t('videoPlacement')}
+                      label={i18n.t("videoPlacement")}
                       value={values.visit.videoPlacement}
                       placeholder={`${i18n.t(
-                        'videoPlacementPlaceholder',
-                      )} ${i18n.t('optional')}`}
+                        "videoPlacementPlaceholder",
+                      )} ${i18n.t("optional")}`}
                       onChangeText={videoPlacement =>
                         setValues({
                           ...values,
@@ -374,12 +374,12 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <Input
                       accessoryLeft={MultiplePersonIcon}
-                      label={i18n.t('partners')}
+                      label={i18n.t("partners")}
                       value={values.visit.partners}
                       placeholder={`${i18n.t(
-                        'visitPartnersPlaceholder',
-                      )} ${i18n.t('optional')}`}
-                      caption={i18n.t('visitPartnersCaption')}
+                        "visitPartnersPlaceholder",
+                      )} ${i18n.t("optional")}`}
+                      caption={i18n.t("visitPartnersCaption")}
                       onChangeText={partners =>
                         setValues({
                           ...values,
@@ -391,14 +391,14 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
 
                   <Divider style={{ marginVertical: 10 }} />
                   <View style={{ gap: 10 }}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: "row" }}>
                       <View style={{ flex: 1 }}>
-                        <Text category="s1">{i18n.t('nextVisit')}</Text>
+                        <Text category="s1">{i18n.t("nextVisit")}</Text>
                         <Text appearance="hint" category="c1">
-                          {i18n.t('nextVisitHelperCaption')}
+                          {i18n.t("nextVisitHelperCaption")}
                         </Text>
                       </View>
-                      <View style={{ flexDirection: 'row' }}>
+                      <View style={{ flexDirection: "row" }}>
                         <Toggle
                           checked={values.visit.nextVisit.notifyMe}
                           onChange={notifyMe =>
@@ -413,15 +413,15 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                               },
                             })
                           }>
-                          {i18n.t('notifyMe')}
+                          {i18n.t("notifyMe")}
                         </Toggle>
                       </View>
                     </View>
                     <Datepicker
                       accessoryRight={CalendarIcon}
-                      label={i18n.t('date')}
+                      label={i18n.t("date")}
                       dateService={new MomentDateService(i18n.locale)}
-                      onBlur={() => handleBlur('visit.nextVisit.date')}
+                      onBlur={() => handleBlur("visit.nextVisit.date")}
                       date={values.visit.nextVisit.date}
                       onSelect={date =>
                         setValues({
@@ -438,12 +438,12 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <View
                       style={{
-                        flexDirection: 'column',
+                        flexDirection: "column",
                         gap: 3,
-                        alignItems: 'flex-start',
+                        alignItems: "flex-start",
                       }}>
                       <Text appearance="hint" category="c2">
-                        {i18n.t('time')}
+                        {i18n.t("time")}
                       </Text>
                       <RNDateTimePicker
                         style={{
@@ -470,11 +470,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     </View>
                     <Input
                       accessoryLeft={HookIcon}
-                      label={i18n.t('visitLinkTopic')}
+                      label={i18n.t("visitLinkTopic")}
                       value={values.visit.nextVisit.linkTopic}
                       placeholder={`${i18n.t(
-                        'visitLinkTopicPlaceholder',
-                      )} ${i18n.t('optional')}`}
+                        "visitLinkTopicPlaceholder",
+                      )} ${i18n.t("optional")}`}
                       onChangeText={linkTopic =>
                         setValues({
                           ...values,
@@ -490,11 +490,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     />
                     <Input
                       accessoryLeft={ScriptureIcon}
-                      label={i18n.t('visitLinkScripture')}
+                      label={i18n.t("visitLinkScripture")}
                       value={values.visit.nextVisit.linkScripture}
                       placeholder={`${i18n.t(
-                        'visitLinkScripturePlaceholder',
-                      )} ${i18n.t('optional')}`}
+                        "visitLinkScripturePlaceholder",
+                      )} ${i18n.t("optional")}`}
                       onChangeText={linkScripture =>
                         setValues({
                           ...values,
@@ -511,11 +511,11 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                     <Input
                       accessoryLeft={NoteIcon}
                       value={values.visit.nextVisit.linkNote}
-                      label={i18n.t('note')}
+                      label={i18n.t("note")}
                       multiline
                       placeholder={`${i18n.t(
-                        'visitNextVisitNotePlaceholder',
-                      )} ${i18n.t('optional')}`}
+                        "visitNextVisitNotePlaceholder",
+                      )} ${i18n.t("optional")}`}
                       onChangeText={linkNote =>
                         setValues({
                           ...values,
@@ -533,7 +533,7 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
 
                   <Divider style={{ marginVertical: 10 }} />
                   <View style={{ gap: 10 }}>
-                    <Text category="s1">{i18n.t('moreOptions')}</Text>
+                    <Text category="s1">{i18n.t("moreOptions")}</Text>
                     <View style={{ marginHorizontal: 5, gap: 10 }}>
                       <CheckBox
                         checked={values.visit.doNotCountTowardsStudy}
@@ -543,10 +543,10 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
                             visit: { ...values.visit, doNotCountTowardsStudy },
                           })
                         }>
-                        {i18n.t('doNotCountTowardsStudy')}
+                        {i18n.t("doNotCountTowardsStudy")}
                       </CheckBox>
                       <Text appearance="hint" category="c1">
-                        {i18n.t('doNotCountTowardsStudyCaption')}
+                        {i18n.t("doNotCountTowardsStudyCaption")}
                       </Text>
                     </View>
                   </View>
@@ -557,7 +557,7 @@ const VisitFormScreen = ({ route, navigation }: VisitFormScreenProps) => {
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
       <Button onPress={() => formikRef.current?.handleSubmit()}>
-        {i18n.t('addVisit')}
+        {i18n.t("addVisit")}
       </Button>
     </Layout>
   );

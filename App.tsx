@@ -1,34 +1,35 @@
-import * as eva from '@eva-design/eva';
+import * as eva from "@eva-design/eva";
 import {
   BottomTabBarProps,
   createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
+} from "@react-navigation/bottom-tabs";
 import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
-} from '@react-navigation/native';
+} from "@react-navigation/native";
 import {
   ApplicationProvider,
   BottomNavigation,
   BottomNavigationTab,
   Icon,
   IconRegistry,
-} from '@ui-kitten/components';
-import { getLocales } from 'expo-localization';
-import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useState } from 'react';
-import { ImageProps } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as Sentry from 'sentry-expo';
+} from "@ui-kitten/components";
+import { getLocales } from "expo-localization";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useCallback, useEffect, useState } from "react";
+import { ImageProps } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as Sentry from "sentry-expo";
 
-import { ThemeContext } from './src/contexts/ThemeContext';
-import { MaterialCommunityIconsPack } from './src/lib/MaterialIconsPack';
-import { i18n } from './src/lib/translations';
-import HomeStackScreen from './src/stacks/HomeStackScreen';
-import { RootStackParamList } from './src/stacks/ParamLists';
-import TerritoryStackScreen from './src/stacks/TerritoryStackScreen';
-import useSettingStore from './src/stores/SettingsStore';
+import * as Notifications from "expo-notifications";
+import { ThemeContext } from "./src/contexts/ThemeContext";
+import { MaterialCommunityIconsPack } from "./src/lib/MaterialIconsPack";
+import { i18n } from "./src/lib/translations";
+import HomeStackScreen from "./src/stacks/HomeStackScreen";
+import { RootStackParamList } from "./src/stacks/ParamLists";
+import TerritoryStackScreen from "./src/stacks/TerritoryStackScreen";
+import useSettingStore from "./src/stores/SettingsStore";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -45,11 +46,19 @@ i18n.locale = getLocales()[0].languageCode;
 // When a value is missing from a language it'll fall back to another language with the key present.
 i18n.enableFallback = true;
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    const nextTheme = theme === "light" ? "dark" : "light";
     setTheme(nextTheme);
   };
 
@@ -89,7 +98,7 @@ function App() {
         onSelect={index => {
           const isFocused = state.index === index;
           const event = navigation.emit({
-            type: 'tabPress',
+            type: "tabPress",
             target: state.routes[index].key,
             canPreventDefault: true,
           });
@@ -98,8 +107,8 @@ function App() {
             navigation.navigate(state.routes[index].name, { merge: true });
           }
         }}>
-        <BottomNavigationTab title={i18n.t('home')} icon={HomeIcon} />
-        <BottomNavigationTab title={i18n.t('territory')} icon={MapIcon} />
+        <BottomNavigationTab title={i18n.t("home")} icon={HomeIcon} />
+        <BottomNavigationTab title={i18n.t("territory")} icon={MapIcon} />
       </BottomNavigation>
     );
   };
@@ -110,7 +119,7 @@ function App() {
       <ApplicationProvider {...eva} theme={eva[theme]}>
         <SafeAreaProvider>
           <NavigationContainer
-            theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
+            theme={theme === "dark" ? DarkTheme : DefaultTheme}>
             <Tab.Navigator
               initialRouteName="Home"
               tabBar={props => <BottomBar {...props} />}

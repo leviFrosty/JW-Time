@@ -1,7 +1,7 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { PropsWithChildren } from 'react';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { PropsWithChildren } from "react";
 
-import TerritoryScreen from '../screens/TerritoryScreen';
+import TerritoryScreen from "../screens/TerritoryScreen";
 
 interface TerritoryStackScreenProps {}
 

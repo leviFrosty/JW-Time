@@ -1,15 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import {
   Icon,
   TopNavigation,
   TopNavigationAction,
-} from '@ui-kitten/components';
-import { TouchableWebElement } from '@ui-kitten/components/devsupport';
-import { ImageProps } from 'react-native';
+} from "@ui-kitten/components";
+import { TouchableWebElement } from "@ui-kitten/components/devsupport";
+import { ImageProps } from "react-native";
 
 interface TopBarNavWithBackButtonProps {
   title?: string;
-  arrow?: 'up' | 'down' | 'left' | 'right';
+  arrow?: "up" | "down" | "left" | "right";
   iconLeft?:
     | (() => React.ReactElement<any, string | React.JSXElementConstructor<any>>)
     | undefined;
@@ -33,7 +33,7 @@ const TopNavBarWithBackButton: React.FC<TopBarNavWithBackButtonProps> = ({
   const BackIcon = (
     props?: Partial<ImageProps>,
   ): React.ReactElement<ImageProps> => (
-    <Icon {...props} name={`arrow-${arrow || 'left'}`} />
+    <Icon {...props} name={`arrow-${arrow || "left"}`} />
   );
 
   const goBack = () => navigation.goBack();

@@ -4,21 +4,21 @@ import {
   Layout,
   Text,
   useStyleSheet,
-} from '@ui-kitten/components';
-import moment from 'moment';
-import { StyleSheet, View } from 'react-native';
+} from "@ui-kitten/components";
+import moment from "moment";
+import { StyleSheet, View } from "react-native";
 
-import appTheme from '../lib/theme';
-import { i18n } from '../lib/translations';
-import { Call } from '../stores/CallStore';
+import appTheme from "../lib/theme";
+import { i18n } from "../lib/translations";
+import { Call } from "../stores/CallStore";
 import {
   MonthReportData,
   ServiceRecord,
   hourInMS,
-} from '../stores/ServiceRecord';
-import useSettingStore from '../stores/SettingsStore';
-import { Visit } from '../stores/VisitStore';
-import ReportHours from './ReportHours';
+} from "../stores/ServiceRecord";
+import useSettingStore from "../stores/SettingsStore";
+import { Visit } from "../stores/VisitStore";
+import ReportHours from "./ReportHours";
 
 export const isSameMonthAndYear = (
   date: moment.Moment,
@@ -120,11 +120,11 @@ export const parseForMonthReport = ({
   const studies = automatedStudies + studiesOffset;
   const returnVisits = automatedReturnVisits + returnVisitsOffset;
 
-  const monthDisplay = month ? moment().month(month).format('MMMM') : '';
-  const yearDisplay = year ? `, ${moment().year(year).format('YYYY')}` : '';
+  const monthDisplay = month ? moment().month(month).format("MMMM") : "";
+  const yearDisplay = year ? `, ${moment().year(year).format("YYYY")}` : "";
   const title = `${
-    monthDisplay || yearDisplay ? `${monthDisplay}${yearDisplay} ` : ''
-  }${i18n.t('serviceReport')}`;
+    monthDisplay || yearDisplay ? `${monthDisplay}${yearDisplay} ` : ""
+  }${i18n.t("serviceReport")}`;
 
   return {
     hours,
@@ -172,17 +172,17 @@ export const formatReportForSharing = ({
     null,
     2,
   );
-  const lines = json.split('\n');
+  const lines = json.split("\n");
   const formattedLines = lines.map(line => line.trim());
-  let formattedJSON = formattedLines.join('\n').replace(/["{},]/g, '');
-  formattedJSON = formattedJSON.replace('hours', i18n.t('hours'));
-  formattedJSON = formattedJSON.replace('placements', i18n.t('placements'));
+  let formattedJSON = formattedLines.join("\n").replace(/["{},]/g, "");
+  formattedJSON = formattedJSON.replace("hours", i18n.t("hours"));
+  formattedJSON = formattedJSON.replace("placements", i18n.t("placements"));
   formattedJSON = formattedJSON.replace(
-    'videoPlacements',
-    i18n.t('videoPlacements'),
+    "videoPlacements",
+    i18n.t("videoPlacements"),
   );
-  formattedJSON = formattedJSON.replace('returnVisits', i18n.t('returnVisits'));
-  formattedJSON = formattedJSON.replace('studies', i18n.t('studies'));
+  formattedJSON = formattedJSON.replace("returnVisits", i18n.t("returnVisits"));
+  formattedJSON = formattedJSON.replace("studies", i18n.t("studies"));
   return formattedJSON.trim();
 };
 
@@ -199,7 +199,7 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
   const themeStyles = StyleSheet.create({
     container: {
       borderWidth: 1,
-      borderColor: 'border-primary-color-1',
+      borderColor: "border-primary-color-1",
       borderRadius: appTheme.borderRadius,
       paddingHorizontal: 15,
       paddingTop: 15,
@@ -207,32 +207,32 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
       gap: 5,
     },
     arrow: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 8,
       right: 8,
-      justifyContent: 'flex-end',
+      justifyContent: "flex-end",
     },
     content: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
     box: {
       gap: 10,
     },
     number: {
-      textAlign: 'center',
+      textAlign: "center",
     },
     chevronRight: {
       marginTop: 10,
       height: 15,
       width: 15,
-      color: 'text-hint-color',
+      color: "text-hint-color",
     },
   });
   const styles = useStyleSheet(themeStyles);
 
   const ChevronRight = (): IconElement => (
-    <Icon style={styles.chevronRight} name={'chevron-right'} />
+    <Icon style={styles.chevronRight} name={"chevron-right"} />
   );
 
   return (
@@ -240,13 +240,13 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
       <View style={styles.content}>
         <View style={styles.box}>
           <Text appearance="hint" category="c2">
-            {i18n.t('hours')}
+            {i18n.t("hours")}
           </Text>
           <ReportHours hours={hours} target={monthlyTargetHours} />
         </View>
         <View style={styles.box}>
           <Text appearance="hint" category="c2">
-            {i18n.t('placements')}
+            {i18n.t("placements")}
           </Text>
           <Text category="h6" style={styles.number}>
             {placements}
@@ -254,7 +254,7 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
         </View>
         <View style={styles.box}>
           <Text appearance="hint" category="c2">
-            {i18n.t('videos')}
+            {i18n.t("videos")}
           </Text>
           <Text category="h6" style={styles.number}>
             {videoPlacements}
@@ -262,7 +262,7 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
         </View>
         <View style={styles.box}>
           <Text appearance="hint" category="c2">
-            {i18n.t('returnVisits')}
+            {i18n.t("returnVisits")}
           </Text>
           <Text category="h6" style={styles.number}>
             {returnVisits}
@@ -270,7 +270,7 @@ const MonthReport: React.FC<MonthReportProps> = ({ report, hideArrow }) => {
         </View>
         <View style={styles.box}>
           <Text appearance="hint" category="c2">
-            {i18n.t('studies')}
+            {i18n.t("studies")}
           </Text>
           <Text category="h6" style={styles.number}>
             {studies}
